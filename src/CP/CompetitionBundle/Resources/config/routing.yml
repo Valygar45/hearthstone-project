@@ -1,0 +1,3 @@
+cp_competition_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: CPCompetitionBundle:Default:index }

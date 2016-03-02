@@ -1,3 +1,7 @@
+cp_competition:
+    resource: "@CPCompetitionBundle/Resources/config/routing.yml"
+    prefix:   /
+
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
