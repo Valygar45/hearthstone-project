@@ -1,3 +1,7 @@
 cp_competition_homepage:
+    path:     /test_arbre
+    defaults: { _controller: CPCompetitionBundle:test:index }
+
+cp_competition_homepage:
     path:     /hello/{name}
     defaults: { _controller: CPCompetitionBundle:Default:index }
