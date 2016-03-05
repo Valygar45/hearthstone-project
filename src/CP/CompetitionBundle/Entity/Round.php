@@ -28,6 +28,94 @@ class Round
      */
     private $numRound;
 
+    /**
+     * @return mixed
+     */
+    public function getGame()
+    {
+        return $this->game;
+    }
+
+    /**
+     * @param mixed $game
+     */
+    public function setGame($game)
+    {
+        $this->game = $game;
+    }
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CP\CompetitionBundle\Entity\Game",cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $game;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CP\CompetitionBundle\Entity\Round")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $parentRound;
+
+    /**
+     * @return mixed
+     */
+    public function getRightRound()
+    {
+        return $this->rightRound;
+    }
+
+    /**
+     * @param mixed $rightRound
+     */
+    public function setRightRound($rightRound)
+    {
+        $this->rightRound = $rightRound;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getParentRound()
+    {
+        return $this->parentRound;
+    }
+
+    /**
+     * @param mixed $parentRound
+     */
+    public function setParentRound($parentRound)
+    {
+        $this->parentRound = $parentRound;
+    }
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CP\CompetitionBundle\Entity\Round")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $leftRound;
+
+    /**
+     * @return mixed
+     */
+    public function getLeftRound()
+    {
+        return $this->leftRound;
+    }
+
+    /**
+     * @param mixed $leftRound
+     */
+    public function setLeftRound($leftRound)
+    {
+        $this->leftRound = $leftRound;
+    }
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CP\CompetitionBundle\Entity\Round")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $rightRound;
 
     /**
      * Get id
@@ -61,4 +149,13 @@ class Round
     {
         return $this->numRound;
     }
+
+    public function __construct()
+    {
+        $this->numRound = 0;
+
+    }
+
+
+
 }
