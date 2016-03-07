@@ -56,28 +56,28 @@ class Game
     /**
      * @var string
      *
-     * @ORM\Column(name="team1", type="string", length=255)
+     * @ORM\Column(name="team1", type="string", length=255,nullable=true)
      */
     private $team1;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="team2", type="string", length=255)
+     * @ORM\Column(name="team2", type="string", length=255,nullable=true)
      */
     private $team2;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="score", type="integer")
+     * @ORM\Column(name="score", type="integer",nullable=true)
      */
     private $score1;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="score2", type="integer")
+     * @ORM\Column(name="score2", type="integer",nullable=true)
      */
     private $score2;
 

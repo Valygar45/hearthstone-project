@@ -34,6 +34,7 @@ public function simpleTreeGenerator($taille)
     $jstab = $this->bracketJSData($tab);
     return $jstab; */
 
+    return $fatherRound;
 }
 
 public function simpleTreeJS($competitionID){
@@ -43,7 +44,6 @@ $fatherRound = $competition->getFatherRound();
     $tab = array();
     $tab = $this->parcourir_arbre($fatherRound, 0, $tab);
     $jstab = $this->bracketJSData($tab);
-    $jstab["results"][1][0][0] = 0;
     return $jstab;
 }
 
