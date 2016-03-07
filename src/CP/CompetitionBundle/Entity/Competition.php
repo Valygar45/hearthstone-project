@@ -75,6 +75,29 @@ class Competition
      *
      * @return integer 
      */
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CP\CompetitionBundle\Entity\Round")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $fatherRound;
+
+    /**
+     * @return mixed
+     */
+    public function getFatherRound()
+    {
+        return $this->fatherRound;
+    }
+
+    /**
+     * @param mixed $fatherRound
+     */
+    public function setFatherRound($fatherRound)
+    {
+        $this->fatherRound = $fatherRound;
+    }
+
     public function getId()
     {
         return $this->id;

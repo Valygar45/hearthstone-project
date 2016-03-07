@@ -72,7 +72,14 @@ class Game
      *
      * @ORM\Column(name="score", type="integer")
      */
-    private $score;
+    private $score1;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="score2", type="integer")
+     */
+    private $score2;
 
 
     /**
@@ -86,25 +93,48 @@ class Game
     }
 
     /**
-     * Set score
+     * Set score1
      *
      * @param integer $score
      * @return Game
      */
-    public function setScore($score)
+    public function setScore1($score)
     {
-        $this->score = $score;
+        $this->score1 = $score;
 
         return $this;
     }
 
     /**
-     * Get score
+     * Set score2
+     *
+     * @param integer $score
+     * @return Game
+     */
+    public function setScore2($score)
+    {
+        $this->score2 = $score;
+
+        return $this;
+    }
+
+    /**
+     * Get score1
      *
      * @return integer 
      */
-    public function getScore()
+    public function getScore1()
     {
-        return $this->score;
+        return $this->score1;
+    }
+
+    /**
+     * Get score2
+     *
+     * @return integer
+     */
+    public function getScore2()
+    {
+        return $this->score2;
     }
 }

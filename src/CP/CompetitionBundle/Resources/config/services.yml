@@ -1,4 +1,4 @@
 services:
-#    cp_competition.example:
-#        class: CP\CompetitionBundle\Example
-#        arguments: [@service_id, "plain_value", %parameter%]
+  cp_competition.binarytree:
+    class: CP\CompetitionBundle\TreeOperation\CPBinaryTree
+    arguments: [@doctrine]
