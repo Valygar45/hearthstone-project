@@ -7,17 +7,36 @@ use CP\CompetitionBundle\Entity\Game;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CP\CompetitionBundle\Entity\Round;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
-class testController extends Controller
+/**
+ *
+ *
+ * Class BinaryTreeController
+ * @package CP\CompetitionBundle\Controller
+ */
+class BinaryTreeController extends Controller
 {
-    public function indexAction(Competition $competition)
+    /**
+     * Recupère la competition donnée en argument et génère le tableau JSON permettant ensuite d'afficher l'arbre avec l'aide de JBracket
+     *
+     * @param Competition $competition
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function treeAction(Competition $competition)
     {
         $tree = $this->container->get('cp_competition.binarytree');
         $jstab = $tree->simpleTreeJS($competition->getId());
-        return $this->render('CPCompetitionBundle:index.html.twig',array("tabtest"=>$jstab));
+        return $this->render('CPCompetitionBundle:BinaryTree:tree.html.twig',array("bracketJSON"=>$jstab));
     }
 
+    /**
+     * Permet de créer une nouvelle compétition et de génerer l'arbre associé.
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function newAction(Request $request)
     {
         $competition = new Competition();
@@ -41,13 +60,13 @@ class testController extends Controller
         $form = $formBuilder->getForm();
 
         // On fait le lien Requête <-> Formulaire
-        // À partir de maintenant, la variable $advert contient les valeurs entrées dans le formulaire par le visiteur
+
         $form->handleRequest($request);
 
         // On vérifie que les valeurs entrées sont correctes
-        // (Nous verrons la validation des objets en détail dans le prochain chapitre)
+
         if ($form->isValid()) {
-            // On l'enregistre notre objet $advert dans la base de données, par exemple
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($competition);
             $tree = $this->container->get('cp_competition.binarytree');
@@ -56,24 +75,35 @@ class testController extends Controller
             $competition->setFatherRound($fatherRound);
             $em->flush();
 
-            // On redirige vers la page de visualisation de l'annonce nouvellement créée
-            return $this->redirect($this->generateUrl('cp_competition_tree',array('id_competition'=>$competition->getId())));
+
+            return $this->redirect($this->generateUrl('cp_competition_tree',array('id'=>$competition->getId())));
 
             }
 
 // On passe la méthode createView() du formulaire à la vue
         // afin qu'elle puisse afficher le formulaire toute seule
-        return $this->render('CPCompetitionBundle:game.html.twig', array(
+        return $this->render('CPCompetitionBundle:BinaryTree:new.html.twig', array(
             'form' => $form->createView(),
         ));
 
     }
 
-    public function gameAction(Request $request,$game_id,Competition $competition)
+    /**
+     * Formulaire qui va permettre d'afficher un Game et de le modifier si les droits de l'utilisateur le permet.
+     *
+     * @param Request $request
+     * @param $game_id
+     * @param Competition $competition
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function gameAction(Request $request, $game_id, Competition $competition)
     {
         // On crée un objet Game
         $repository = $this->getDoctrine()->getManager()->getRepository('CPCompetitionBundle:Game');
         $game = $repository->find($game_id);
+        if($game==null){
+            throw new NotFoundHttpException('Ce match n\'existe pas.');
+        }
 
         // On crée le FormBuilder grâce au service form factory
         $formBuilder = $this->get('form.factory')->createBuilder('form', $game);
@@ -92,13 +122,13 @@ class testController extends Controller
         $form = $formBuilder->getForm();
 
         // On fait le lien Requête <-> Formulaire
-        // À partir de maintenant, la variable $advert contient les valeurs entrées dans le formulaire par le visiteur
+
         $form->handleRequest($request);
 
         // On vérifie que les valeurs entrées sont correctes
-        // (Nous verrons la validation des objets en détail dans le prochain chapitre)
+
         if ($form->isValid()) {
-            // On l'enregistre notre objet $advert dans la base de données, par exemple
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($game);
 
@@ -113,8 +143,11 @@ class testController extends Controller
             }
 
             $round = $em->getRepository('CPCompetitionBundle:Round')->findOneByGame($game_id);
+            if($round == null){
+                throw new NotFoundHttpException('Le match n\'est attaché à aucun round');
+            }
 
-            if($round != null && $winner !=false) {
+            else if ($winner !=false) {
                 $nextRound = $round->getParentRound();
                 if ($nextRound != null) {
 
@@ -136,14 +169,14 @@ class testController extends Controller
             }
 
             $em->flush();
-            // On redirige vers la page de visualisation de l'annonce nouvellement créée
+
             return $this->redirect($this->generateUrl('cp_competition_tree',array("id"=>$competition->getId())));
         }
 
 
         // On passe la méthode createView() du formulaire à la vue
         // afin qu'elle puisse afficher le formulaire toute seule
-        return $this->render('CPCompetitionBundle:game.html.twig', array(
+        return $this->render('CPCompetitionBundle:BinaryTree:game.html.twig', array(
             'form' => $form->createView(),
         ));
     }

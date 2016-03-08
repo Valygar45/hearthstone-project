@@ -8,13 +8,13 @@
 </head>
 
 
-{{ tabtest|json_encode() }}
+{{ bracketJSON|json_encode() }}
 
 
 <div id="minimal">
 
     <script type="text/javascript">
-    var minimalData = {{ tabtest|json_encode()|raw }}
+    var minimalData = {{ bracketJSON|json_encode()|raw }}
 
 
 

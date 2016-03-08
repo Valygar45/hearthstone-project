@@ -3,7 +3,14 @@ namespace CP\CompetitionBundle\TreeOperation;
 
 use CP\CompetitionBundle\Entity\Game;
 use CP\CompetitionBundle\Entity\Round;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Service qui va gérer les arbres de type binaire permettant les tournois avec élimination directe
+ *
+ * Class CPBinaryTree
+ * @package CP\CompetitionBundle\TreeOperation
+ */
 class CPBinaryTree
 {
     private $doctrine;
@@ -13,33 +20,41 @@ class CPBinaryTree
         $this->doctrine = $doctrine;
 
     }
-public function simpleTreeGenerator($taille)
+
+    /**
+     * Fonction qui prend en entrée le nombre de joueurs du tournoi et qui génère l'arbre correspondant.
+     * La fonction retourne le Round "father" qui est le niveau 0 de l'arbre et qui va permettre de parcourir toutes les branches de l'arbre
+     *
+     * @param $taille
+     * @return Round
+     */
+    public function simpleTreeGenerator($taille)
 {
+    if( ($taille & ($taille - 1)) != 0){
+        throw new NotFoundHttpException('Le nombre de joueurs : "'.$taille.'" n \'est pas valable pour génerer un arbre binaire.');
+    }
     $this->em = $this->doctrine->getManager();
 
     $fatherRound = $this->genererArbre(null, $taille);
     $this->em->flush();
-    /*$tab = array();
-    $tab = $this->parcourir_arbre($fatherRound, 0, $tab);
-    $jstab = array(
-                        "team"=>array(
-                                    array("Team1","Team2"),array("Team3","Team4")
-                                )
-    ,                    "score"=>array(
-                                            array("score1","score2"),array("score3","score4")));
-    $tab[1][0] = new Game();
-    $tab[1][0]->setTeam1("om");
-    $tab[1][0]->setTeam1("psg");
-    $tab[1][0]->setScore(2);
-    $jstab = $this->bracketJSData($tab);
-    return $jstab; */
 
     return $fatherRound;
 }
 
-public function simpleTreeJS($competitionID){
+    /**
+     * Fonction qui permet de génerer un tableau au format JSON permettant de génerer l'arbre avec JBracket.
+     *
+     *
+     * @param $competitionID
+     * @return array
+     */
+    public function simpleTreeJS($competitionID){
     $repository = $this->doctrine->getManager()->getRepository('CPCompetitionBundle:Competition');
     $competition = $repository->find($competitionID);
+        if($competition==null) {
+            throw new NotFoundHttpException('Impossible de trouver la compétition dans la base de données');
+        }
+
 $fatherRound = $competition->getFatherRound();
     $tab = array();
     $tab = $this->parcourir_arbre($fatherRound, 0, $tab);
@@ -48,7 +63,16 @@ $fatherRound = $competition->getFatherRound();
 }
 
 
-public function genererArbre($round,$taille)
+    /**
+     * Fonction récursive, qui va peremttre de génerer les 2 round "fils" du round donnée en entrée.
+     * Le paramètre taille permet d'avoir la condition d'arret de la fonction.
+     *
+     * @param $round
+     * @param $taille
+     * @return Round
+     *
+     */
+    public function genererArbre($round, $taille)
 {
     $mainRound = new Round();
     $this->em->persist($mainRound);
@@ -75,7 +99,16 @@ public function genererArbre($round,$taille)
     return $mainRound;
 }
 
-public function parcourir_arbre($round, $level,$tab){
+    /**
+     * Fonction recursive qui va parcourir tout un arbre en partant du fatherRound.
+     * Les différents Game parcourut sont ajoutés dans un tableau avec un indice pour chaque niveau de l'arbre.
+     *
+     * @param $round
+     * @param $level
+     * @param $tab
+     * @return mixed
+     */
+    public function parcourir_arbre($round, $level, $tab){
 
     if(!isset($tab[$level])) {
         $tab[$level] = array();
@@ -95,7 +128,14 @@ public function parcourir_arbre($round, $level,$tab){
     return $tab;
 
 }
-public function bracketJSData($tab)
+
+    /**
+     * Fonction qui va convertir le tableau généré par parcourir_arbre en tableau convertissable au format JSON et lisible par JBracket avec la fonction js_encode.
+     *
+     * @param $tab
+     * @return array
+     */
+    public function bracketJSData($tab)
 {
     $json = array();
     $json["teams"] = array();

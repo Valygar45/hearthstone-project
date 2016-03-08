@@ -1,10 +1,10 @@
 cp_competition_tree:
     path:     /{id}/tree
-    defaults: { _controller: CPCompetitionBundle:test:index }
+    defaults: { _controller: CPCompetitionBundle:BinaryTree:tree }
 cp_competition_new:
     path:     /new
-    defaults: { _controller: CPCompetitionBundle:test:new }
+    defaults: { _controller: CPCompetitionBundle:BinaryTree:new }
 cp_competition_game:
     path:     /{id}/game/{game_id}
-    defaults: { _controller: CPCompetitionBundle:test:game }
+    defaults: { _controller: CPCompetitionBundle:BinaryTree:game }
 
