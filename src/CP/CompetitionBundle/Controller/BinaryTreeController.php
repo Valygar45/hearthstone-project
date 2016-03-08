@@ -70,7 +70,9 @@ class BinaryTreeController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($competition);
             $tree = $this->container->get('cp_competition.binarytree');
-            $fatherRound = $tree->simpleTreeGenerator($competition->getNbPlayers());
+            $players=array("Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8","Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8","Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8","Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8");
+
+            $fatherRound = $tree->simpleTreeGenerator($competition->getNbPlayers(),$players);
             $em->persist($fatherRound);
             $competition->setFatherRound($fatherRound);
             $em->flush();

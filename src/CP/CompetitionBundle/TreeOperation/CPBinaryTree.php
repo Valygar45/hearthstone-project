@@ -15,6 +15,7 @@ class CPBinaryTree
 {
     private $doctrine;
     private $em;
+    private $players;
     public function __construct($doctrine)
     {
         $this->doctrine = $doctrine;
@@ -22,18 +23,19 @@ class CPBinaryTree
     }
 
     /**
-     * Fonction qui prend en entrée le nombre de joueurs du tournoi et qui génère l'arbre correspondant.
+     * Fonction qui prend en entrée le nombre de joueurs du tournoi  ainsi que les joueurs et qui génère l'arbre correspondant.
      * La fonction retourne le Round "father" qui est le niveau 0 de l'arbre et qui va permettre de parcourir toutes les branches de l'arbre
      *
      * @param $taille
      * @return Round
      */
-    public function simpleTreeGenerator($taille)
+    public function simpleTreeGenerator($taille, $players)
 {
     if( ($taille & ($taille - 1)) != 0){
         throw new NotFoundHttpException('Le nombre de joueurs : "'.$taille.'" n \'est pas valable pour génerer un arbre binaire.');
     }
     $this->em = $this->doctrine->getManager();
+    $this->players = $players;
 
     $fatherRound = $this->genererArbre(null, $taille);
     $this->em->flush();
@@ -81,11 +83,15 @@ $fatherRound = $competition->getFatherRound();
 
     if($taille<=2){
         $game = new Game();
-        $game->setTeam1("test");
-        $game->setTeam2("test2");
-        $game->setScore1(0);
-        $game->setScore2(0);
+        $game->setTeam1($this->players[0]);
+        $game->setTeam2($this->players[1]);
+        $game->setScore1(null);
+        $game->setScore2(null);
         $mainRound->setGame($game);
+
+        unset($this->players[0]);
+        unset($this->players[1]);
+        $this->players = array_values($this->players);
 
     }
     else{
