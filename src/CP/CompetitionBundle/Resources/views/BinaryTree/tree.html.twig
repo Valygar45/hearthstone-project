@@ -1,0 +1,35 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/cpcompetition/css/jquery.bracket.min.css') }}" />
+
+
+<script type="text/javascript" src="{{ asset('bundles/cpcompetition/js/jquery-1.6.2.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/cpcompetition/js/jquery.bracket.min.js') }}"></script>
+</head>
+
+
+{{ bracketJSON|json_encode() }}
+
+
+<div id="minimal">
+
+    <script type="text/javascript">
+    var minimalData = {{ bracketJSON|json_encode()|raw }}
+
+
+
+    $(function() {
+    $('#minimal').bracket({
+    init: minimalData, /* data to initialize the bracket with */
+        onMatchClick: onclick
+    })
+
+    })
+    function onclick(data) {
+        if(data!==null && data!==undefined) {
+            document.location.href = 'game/' + data
+        }
+    }
+    </script>
+</div>
+</html>

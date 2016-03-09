@@ -6,24 +6,9 @@
 <script type="text/javascript" src="{{ asset('bundles/cpcompetition/js/jquery-1.6.2.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/cpcompetition/js/jquery.bracket.min.js') }}"></script>
 </head>
-{{ dump(tab) }}
-
-{{ dump(father) }}
-
-{{ tabtest|json_encode() }}
 
 
-<div id="minimal">
-
-    <script type="text/javascript">
-    var minimalData = {{ tabtest|json_encode()|raw }}
+    {{ form(form) }}
 
 
-
-    $(function() {
-    $('#minimal').bracket({
-    init: minimalData /* data to initialize the bracket with */ })
-    })
-    </script>
-</div>
 </html>

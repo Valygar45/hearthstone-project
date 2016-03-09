@@ -8,6 +8,6 @@ class DefaultController extends Controller
 {
     public function indexAction($name)
     {
-        return $this->render('CPCompetitionBundle:Default:index.html.twig', array('name' => $name));
+        return $this->render('CPCompetitionBundle:Default:tree.html.twig', array('name' => $name));
     }
 }
