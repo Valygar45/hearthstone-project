@@ -3,9 +3,15 @@
 security:
 
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
+    encoders:
+        CP\UserBundle\Entity\User: sha512
+
     providers:
         in_memory:
             memory: ~
+
+        main:
+            id: fos_user.user_provider.username
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -14,7 +20,17 @@ security:
             security: false
 
         main:
-            anonymous: ~
+            pattern:        ^/
+            anonymous:      true
+            provider:       main
+            form_login:
+                  login_path: fos_user_security_login
+                  check_path: fos_user_security_check
+            logout:
+                  path:       fos_user_security_logout
+                  target:     /platform
+            remember_me:
+                  key:        %secret%
             # activate different ways to authenticate
 
             # http_basic: ~
