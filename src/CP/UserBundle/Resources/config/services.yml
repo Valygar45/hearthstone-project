@@ -1,0 +1,4 @@
+services:
+#    cp_user.example:
+#        class: CP\UserBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
