@@ -60,6 +60,28 @@ class Round
     /**
      * @return mixed
      */
+    public function getParentLoserRound()
+    {
+        return $this->parentLoserRound;
+    }
+
+    /**
+     * @param mixed $parentLoserRound
+     */
+    public function setParentLoserRound($parentLoserRound)
+    {
+        $this->parentLoserRound = $parentLoserRound;
+    }
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CP\CompetitionBundle\Entity\Round")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $parentLoserRound;
+
+    /**
+     * @return mixed
+     */
     public function getRightRound()
     {
         return $this->rightRound;
