@@ -2,6 +2,10 @@ cp_competition:
     resource: "@CPCompetitionBundle/Resources/config/routing.yml"
     prefix:   /
 
+cp_user:
+    resource: "@CPUserBundle/Resources/config/routing.yml"
+    prefix:   /
+
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation

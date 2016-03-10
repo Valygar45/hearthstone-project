@@ -16,7 +16,7 @@ class User extends BaseUser
         parent::__construct();
         // Par défaut, la date de l'annonce est la date d'aujourd'hui
         $this->date_inscription = new \Datetime();
-        $this->palmares = 'N;';
+        //$this->palmares = array('pXl' => "Vainqueur", 'lEsport' => "Troisième");
     }
 
     /**
@@ -36,4 +36,26 @@ class User extends BaseUser
      * @ORM\Column(name="palmares", type="array")
      */
     protected $palmares;
+
+    public function getDate_inscription()
+    {
+        return $this->date_inscription;
+    }
+
+    public function getPalmares()
+    {
+        return $this->palmares;
+    }
+
+    public function getTropheeByKey($key)
+    {
+        $array_trophy = $this->palmares;
+        $trophy = $array_trophy[$key];
+        return $trophy;
+    }
+
+    public function addTrophy($trophy, $rank)
+    {
+        $this->palmares[$trophy] = $rank;
+    }
 }
