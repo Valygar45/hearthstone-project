@@ -1,0 +1,10 @@
+Bienvenue sur votre profil <br>
+Connecté en tant que {{ app.user.username }} <br>
+Votre email: {{ app.user.email }} <br>
+Date d'inscription: {{ user.getDate_inscription()|date('d-m-Y') }} <br>
+Votre palmares:
+<ul>
+    {%  for tropheekey in user.getPalmares()|keys %}
+        <li>{{ tropheekey }} : {{ user.getTropheeByKey(tropheekey) }}</li>
+    {% endfor %}
+</ul>
