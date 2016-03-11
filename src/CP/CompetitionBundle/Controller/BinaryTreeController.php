@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CP\CompetitionBundle\Entity\Round;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 
 /**
@@ -27,7 +28,13 @@ class BinaryTreeController extends Controller
     public function treeAction(Competition $competition)
     {
         $tree = $this->container->get('cp_competition.binarytree');
-        $jstab = $tree->simpleTreeJS($competition->getId());
+        if($competition->getType()=="simple"){
+            $jstab = $tree->SimpleTreeJS($competition->getId());
+        }
+        else if($competition->getType()=="double"){
+            $jstab = $tree->DoubleTreeJS($competition->getId());
+        }
+
         return $this->render('CPCompetitionBundle:BinaryTree:tree.html.twig',array("bracketJSON"=>$jstab));
     }
 
@@ -53,6 +60,13 @@ class BinaryTreeController extends Controller
             ->add('state',      'text')
             ->add('nbPlayers',      'integer')
             ->add('Créer',      'submit')
+            ->add('type', 'choice', array(
+                'choices'  => array(
+                    'simple' => "Simple Elimination Bracket",
+                    'double' => "Double Elimination Bracket",
+
+                ),
+            ))
         ;
 
 
@@ -72,7 +86,13 @@ class BinaryTreeController extends Controller
             $tree = $this->container->get('cp_competition.binarytree');
             $players=array("Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8","Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8","Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8","Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8");
 
-            $fatherRound = $tree->doubleTreeGenerator($competition->getNbPlayers(),$players);
+            if($competition->getType()=="simple"){
+                $fatherRound = $tree->simpleTreeGenerator($competition->getNbPlayers(),$players);
+            }
+            else if($competition->getType()=="double"){
+                $fatherRound = $tree->doubleTreeGenerator($competition->getNbPlayers(),$players);
+            }
+
             $em->persist($fatherRound);
             $competition->setFatherRound($fatherRound);
             $em->flush();
@@ -131,46 +151,15 @@ class BinaryTreeController extends Controller
 
         if ($form->isValid()) {
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($game);
-
-            if($game->getScore1()>$game->getScore2()){
-                $winner = $game->getTeam1();
+            $tree = $this->container->get('cp_competition.binarytree');
+            $emanage = $this->getDoctrine()->getManager();
+            $emanage->persist($game);
+            if($competition->getType()=="simple"){
+                $tree->game_valid_simple($emanage,$game);
             }
-            else if($game->getScore1()==$game->getScore2()){
-                $winner = false;
+            else if($competition->getType()=="double"){
+                $tree->game_valid_double($emanage,$game);
             }
-            else {
-                $winner = $game->getTeam2();
-            }
-
-            $round = $em->getRepository('CPCompetitionBundle:Round')->findOneByGame($game_id);
-            if($round == null){
-                throw new NotFoundHttpException('Le match n\'est attaché à aucun round');
-            }
-
-            else if ($winner !=false) {
-                $nextRound = $round->getParentRound();
-                if ($nextRound != null) {
-
-                    $em->persist($nextRound);
-                    $nextGame = $nextRound->getGame();
-                    if ($nextGame == null) {
-                        $nextGame = new Game();
-                    }
-
-                    $em->persist($nextGame);
-                    $nextRound->setGame($nextGame);
-                    if ($nextRound->getRightRound() == $round) {
-
-                        $nextGame->setTeam1($winner);
-                    } else {
-                        $nextGame->setTeam2($winner);
-                    }
-                }
-            }
-
-            $em->flush();
 
             return $this->redirect($this->generateUrl('cp_competition_tree',array("id"=>$competition->getId())));
         }
