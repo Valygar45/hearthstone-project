@@ -35,7 +35,7 @@ class BinaryTreeController extends Controller
             $jstab = $tree->DoubleTreeJS($competition->getId());
         }
 
-        return $this->render('CPCompetitionBundle:BinaryTree:tree.html.twig',array("bracketJSON"=>$jstab));
+        return $this->render('CPCompetitionBundle:BinaryTree:tree.html.twig',array("bracketJSON"=>$jstab,"competitionType"=>$competition->getType()));
     }
 
     /**

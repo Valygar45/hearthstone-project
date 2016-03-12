@@ -15,7 +15,11 @@
 
     <script type="text/javascript">
     var minimalData = {{ bracketJSON|json_encode()|raw }}
-
+    var doublebool = false;
+    if('{{ competitionType }}'==='double')
+    {
+        doublebool = true;
+    }
 
 
     $(function() {
@@ -23,7 +27,7 @@
     init: minimalData, /* data to initialize the bracket with */
         onMatchClick: onclick,
         skipConsolationRound: true,
-        skipSecondaryFinal: true
+        skipSecondaryFinal: doublebool
     })
 
     })
