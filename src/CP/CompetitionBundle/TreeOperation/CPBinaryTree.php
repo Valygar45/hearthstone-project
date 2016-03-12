@@ -55,6 +55,7 @@ public function doubleTreeGenerator($taille, $players)
     $fatherWinRounds=array();
     $fatherWinRounds=$this->parcourir_arbre_double($fatherWinRound,0,$fatherWinRounds);
     $firstLevel = count($fatherWinRounds);
+    $firstLevelLose=$firstLevel;
 
 
         $parentLoseRounds = array();
@@ -98,39 +99,68 @@ public function doubleTreeGenerator($taille, $players)
         }
 
     if($taille==16){
+        $parentLoseRounds[$firstLevel - 2] = array();
+for($i=0;$i<$taille/8;$i++) {
+    $round = new Round();
+    $this->em->persist($round);
+
+    array_push($parentLoseRounds[$firstLevel - 2], $round);
+
+        $parentLoseRounds[$firstLevel - 1][$i +(1*$i)]->setParentRound($parentLoseRounds[$firstLevel - 2][$i]);
+        $parentLoseRounds[$firstLevel - 1][1+(2*$i)]->setParentRound($parentLoseRounds[$firstLevel - 2][$i]);
+
+    $parentLoseRounds[$firstLevel - 2][$i]->setRightRound($parentLoseRounds[$firstLevel - 1][$i*2]);
+    $parentLoseRounds[$firstLevel - 2][$i]->setLeftRound($parentLoseRounds[$firstLevel - 1][($i*2)+1]);
+}
+        $parentLoseRounds[$firstLevel - 3] = array();
+        for($i=0;$i<$taille/8;$i++) {
+            $round = new Round();
+            $this->em->persist($round);
+
+            array_push($parentLoseRounds[$firstLevel - 3], $round);
+
+                $parentLoseRounds[$firstLevel - 2][$i]->setParentRound($parentLoseRounds[$firstLevel - 3][$i]);
+
+            $parentLoseRounds[$firstLevel - 3][$i]->setRightRound($parentLoseRounds[$firstLevel - 2][$i]);
+            $parentLoseRounds[$firstLevel - 3][$i]->setLeftRound($fatherWinRounds[$firstLevel-3][$i]);
+            $fatherWinRounds[$firstLevel-3][$i]->setParentLoserRound($parentLoseRounds[$firstLevel-3][$i]);
+        }
+        $firstLevelLose=$firstLevelLose-2;
+        $firstLevel=$firstLevel-1;
+
 
     }
 
         $round = new Round();
         $this->em->persist($round);
-        $parentLoseRounds[$firstLevel-2]= array();
-        array_push($parentLoseRounds[$firstLevel-2],$round);
-        for($i = 0;$i<$taille/4;$i++){
-            $parentLoseRounds[$firstLevel-1][$i]->setParentRound( $parentLoseRounds[$firstLevel-2][0]);
+        $parentLoseRounds[$firstLevelLose-2]= array();
+        array_push($parentLoseRounds[$firstLevelLose-2],$round);
+        for($i = 0;$i<2;$i++){
+            $parentLoseRounds[$firstLevelLose-1][$i]->setParentRound( $parentLoseRounds[$firstLevelLose-2][0]);
         }
-        $parentLoseRounds[$firstLevel-2][0]->setRightRound($parentLoseRounds[$firstLevel-1][0]) ;
-        $parentLoseRounds[$firstLevel-2][0]->setLeftRound($parentLoseRounds[$firstLevel-1][1]) ;
+        $parentLoseRounds[$firstLevelLose-2][0]->setRightRound($parentLoseRounds[$firstLevelLose-1][0]) ;
+        $parentLoseRounds[$firstLevelLose-2][0]->setLeftRound($parentLoseRounds[$firstLevelLose-1][1]) ;
 
 
 
     $round = new Round();
     $this->em->persist($round);
-    $parentLoseRounds[$firstLevel-3]= array();
-    array_push($parentLoseRounds[$firstLevel-3],$round);
-    $parentLoseRounds[$firstLevel-3][0]->setLeftRound($fatherWinRounds[$firstLevel-3][0]) ;
-    $parentLoseRounds[$firstLevel-3][0]->setRightRound($parentLoseRounds[$firstLevel-2][0]) ;
-    $parentLoseRounds[$firstLevel-2][0]->setParentRound($parentLoseRounds[$firstLevel-3][0]) ;
+    $parentLoseRounds[$firstLevelLose-3]= array();
+    array_push($parentLoseRounds[$firstLevelLose-3],$round);
+    $parentLoseRounds[$firstLevelLose-3][0]->setLeftRound($fatherWinRounds[$firstLevel-3][0]) ;
+    $parentLoseRounds[$firstLevelLose-3][0]->setRightRound($parentLoseRounds[$firstLevelLose-2][0]) ;
+    $parentLoseRounds[$firstLevelLose-2][0]->setParentRound($parentLoseRounds[$firstLevelLose-3][0]) ;
 
 
-    $fatherWinRounds[$firstLevel-3][0]->setParentLoserRound($parentLoseRounds[$firstLevel-3][0]);
+    $fatherWinRounds[$firstLevel-3][0]->setParentLoserRound($parentLoseRounds[$firstLevelLose-3][0]);
 
     $fatherBracketRound = new Round();
     $this->em->persist($fatherBracketRound);
     $fatherWinRounds[$firstLevel-3][0]->setParentRound($fatherBracketRound);
 
-    $parentLoseRounds[$firstLevel-3][0]->setParentRound($fatherBracketRound);
+    $parentLoseRounds[$firstLevelLose-3][0]->setParentRound($fatherBracketRound);
     $fatherBracketRound->setRightRound( $fatherWinRounds[$firstLevel-3][0]);
-    $fatherBracketRound->setLeftRound($parentLoseRounds[$firstLevel-3][0]);
+    $fatherBracketRound->setLeftRound($parentLoseRounds[$firstLevelLose-3][0]);
 
 
 

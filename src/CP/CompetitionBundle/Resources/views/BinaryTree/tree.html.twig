@@ -6,7 +6,7 @@
 <script type="text/javascript" src="{{ asset('bundles/cpcompetition/js/jquery-1.6.2.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/cpcompetition/js/jquery.bracket.min.js') }}"></script>
 </head>
-
+<body>
 
 {{ bracketJSON|json_encode() }}
 
@@ -22,7 +22,8 @@
     $('#minimal').bracket({
     init: minimalData, /* data to initialize the bracket with */
         onMatchClick: onclick,
-        skipConsolationRound: true
+        skipConsolationRound: true,
+        skipSecondaryFinal: true
     })
 
     })
@@ -33,4 +34,5 @@
     }
     </script>
 </div>
+</body>
 </html>
