@@ -4,7 +4,16 @@ cp_competition_tree:
 cp_competition_new:
     path:     /new
     defaults: { _controller: CPCompetitionBundle:BinaryTree:new }
-cp_competition_game:
-    path:     /{id}/game/{game_id}
+cp_competition_gametree:
+    path:     /{id}/gametree/{game_id}
     defaults: { _controller: CPCompetitionBundle:BinaryTree:game }
+cp_competition_gameroundrobin:
+    path:     /{id}/gameroundrobin/{game_id}
+    defaults: { _controller: CPCompetitionBundle:RoundRobin:game }
+cp_competition_roundrobin:
+    path:     /roundrobin
+    defaults: { _controller: CPCompetitionBundle:RoundRobin:index }
+cp_competition_roundrobinview:
+    path:      /{id}/roundrobinview
+    defaults: { _controller: CPCompetitionBundle:RoundRobin:view }
 

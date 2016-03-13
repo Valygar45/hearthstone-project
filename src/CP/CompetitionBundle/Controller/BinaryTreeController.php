@@ -161,6 +161,7 @@ class BinaryTreeController extends Controller
                 $tree->game_valid_double($emanage,$game);
             }
 
+
             return $this->redirect($this->generateUrl('cp_competition_tree',array("id"=>$competition->getId())));
         }
 
