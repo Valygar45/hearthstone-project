@@ -83,6 +83,11 @@ class Competition
     private $fatherRound;
 
     /**
+     * @ORM\ManyToMany(targetEntity="CP\UserBundle\Entity\User", cascade={"persist"})
+     */
+    private $players;
+
+    /**
      * @return mixed
      */
     public function getFatherRound()
@@ -264,4 +269,44 @@ class Competition
         return $this->nbPlayers;
     }
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->players = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add players
+     *
+     * @param \CP\UserBundle\Entity\User $players
+     * @return Competition
+     */
+    public function addPlayer(\CP\UserBundle\Entity\User $players)
+    {
+        $this->players[] = $players;
+
+        return $this;
+    }
+
+    /**
+     * Remove players
+     *
+     * @param \CP\UserBundle\Entity\Users $players
+     */
+    public function removePlayer(\CP\UserBundle\Entity\User $players)
+    {
+        $this->players->removeElement($players);
+    }
+
+    /**
+     * Get players
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPlayers()
+    {
+        return $this->players;
+    }
 }

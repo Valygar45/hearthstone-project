@@ -7,4 +7,9 @@ cp_competition_new:
 cp_competition_game:
     path:     /{id}/game/{game_id}
     defaults: { _controller: CPCompetitionBundle:BinaryTree:game }
-
+cp_competition_viewTournois:
+    path:     /viewTournois
+    defaults: { _controller: CPCompetitionBundle:RegisterTournois:view }
+cp_competition_inscription:
+    path:     /inscription/{id}
+    defaults: { _controller: CPCompetitionBundle:RegisterTournois:inscription }

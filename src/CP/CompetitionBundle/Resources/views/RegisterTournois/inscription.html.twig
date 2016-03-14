@@ -1,0 +1,13 @@
+<html>
+<body>
+l'utilisateur {{ user }} s'est bien inscrit pour le tournois {{ tournoisID }}
+<br>
+Les joueurs participants au tournois sont les suivants:
+<ul>
+    {% for joueur in tournois.players %}
+        <li>{{ joueur.username }}</li>
+    {% endfor %}
+</ul>
+</body>
+
+</html>
