@@ -3,6 +3,7 @@
 namespace CP\UserBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CP\UserBundle\Entity\User;
 
 class ProfilController extends Controller
 {
@@ -14,5 +15,10 @@ class ProfilController extends Controller
         //$userManager->updateUser($user);
 
         return $this->render('CPUserBundle:Profil:profil.html.twig', array('user' => $user));
+    }
+
+    public function checkProfileAction(User $user)
+    {
+        return $this->render('CPUserBundle:profil:checkProfile.html.twig', array('user_checked' => $user));
     }
 }

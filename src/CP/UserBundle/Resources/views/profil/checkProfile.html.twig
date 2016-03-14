@@ -1,0 +1,9 @@
+Bienvenue sur le profil de {{ user_checked.username }} <br>
+Son email: {{ user_checked.email }} <br>
+Date d'inscription: {{ user_checked.getDate_inscription()|date('d-m-Y') }} <br>
+Son palmares:
+<ul>
+    {%  for tropheekey in user_checked.getPalmares()|keys %}
+        <li>{{ tropheekey }} : {{ user_checked.getTropheeByKey(tropheekey) }}</li>
+    {% endfor %}
+</ul>

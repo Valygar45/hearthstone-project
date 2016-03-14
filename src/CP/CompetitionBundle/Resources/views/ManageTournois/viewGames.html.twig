@@ -1,0 +1,66 @@
+<html>
+<body>
+<table>
+    <tr>
+        <th>
+            Game Id
+        </th>
+        <th>
+            Joueur 1
+        </th>
+        <th>
+            Score 1
+        </th>
+        <th>
+            Score 2
+        </th>
+        <th>
+            Joueur 2
+        </th>
+        <th>
+            Etat
+        </th>
+    </tr>
+    {% for game in games %}
+        {% if game.etat != 3 %}
+        <tr>
+            <td>
+                {{ game.id }}
+            </td>
+            <td>
+                {{ game.joueur1 }}
+            </td>
+            {% if game.etat != 2 %}
+            <td>
+                {{ game.score1 }}
+            </td>
+            <td>
+                {{ game.score2 }}
+            </td>
+            {% else %}
+                <form action="{{ path('cp_competition_validation', {'id': game.id}) }}" method="post">
+                    <td>
+                        <input type="number" name="score1">
+                    </td>
+                    <td>
+                        <input type="number" name="score2">
+                    </td>
+            {% endif %}
+            <td>
+                {{ game.joueur2 }}
+            </td>
+            <td>
+                {{ game.etat }}
+            </td>
+            {% if game.etat == 2 %}
+                <td>
+                    <input type="submit" value="Valider le score"/>
+                    </form>
+                </td>
+            {% endif %}
+        </tr>
+    {% endif %}
+    {% endfor %}
+</table>
+</body>
+</html>

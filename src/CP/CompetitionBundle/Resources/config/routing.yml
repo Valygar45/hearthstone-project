@@ -13,3 +13,12 @@ cp_competition_viewTournois:
 cp_competition_inscription:
     path:     /inscription/{id}
     defaults: { _controller: CPCompetitionBundle:RegisterTournois:inscription }
+cp_competition_viewGames:
+    path:     /viewGames
+    defaults: { _controller: CPCompetitionBundle:ManageTournois:view }
+cp_competition_validation:
+    path:     /validation/{id}
+    defaults: { _controller: CPCompetitionBundle:ManageTournois:validateScore }
+cp_competition_viewPastGames:
+    path:     /viewPastGames
+    defaults: { _controller: CPCompetitionBundle:ManageTournois:viewPastGames }

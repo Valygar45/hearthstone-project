@@ -22,55 +22,9 @@ class Game
     private $id;
 
     /**
-     * @return string
-     */
-    public function getTeam2()
-    {
-        return $this->team2;
-    }
-
-    /**
-     * @param string $team2
-     */
-    public function setTeam2($team2)
-    {
-        $this->team2 = $team2;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTeam1()
-    {
-        return $this->team1;
-    }
-
-    /**
-     * @param string $team1
-     */
-    public function setTeam1($team1)
-    {
-        $this->team1 = $team1;
-    }
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="team1", type="string", length=255,nullable=true)
-     */
-    private $team1;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="team2", type="string", length=255,nullable=true)
-     */
-    private $team2;
-
-    /**
      * @var integer
      *
-     * @ORM\Column(name="score", type="integer",nullable=true)
+     * @ORM\Column(name="score1", type="integer",nullable=true)
      */
     private $score1;
 
@@ -81,6 +35,24 @@ class Game
      */
     private $score2;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="CP\UserBundle\Entity\User")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $joueur1;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CP\UserBundle\Entity\User")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $joueur2;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="etat", type="integer", nullable=false)
+     */
+    private $etat;
 
     /**
      * Get id
@@ -136,5 +108,74 @@ class Game
     public function getScore2()
     {
         return $this->score2;
+    }
+
+    /**
+     * Set joueur1
+     *
+     * @param \CP\UserBundle\Entity\User $joueur1
+     * @return Game
+     */
+    public function setJoueur1(\CP\UserBundle\Entity\User $joueur1 = null)
+    {
+        $this->joueur1 = $joueur1;
+
+        return $this;
+    }
+
+    /**
+     * Get joueur1
+     *
+     * @return \CP\UserBundle\Entity\User 
+     */
+    public function getJoueur1()
+    {
+        return $this->joueur1;
+    }
+
+    /**
+     * Set joueur2
+     *
+     * @param \CP\UserBundle\Entity\User $joueur2
+     * @return Game
+     */
+    public function setJoueur2(\CP\UserBundle\Entity\User $joueur2 = null)
+    {
+        $this->joueur2 = $joueur2;
+
+        return $this;
+    }
+
+    /**
+     * Get joueur2
+     *
+     * @return \CP\UserBundle\Entity\User 
+     */
+    public function getJoueur2()
+    {
+        return $this->joueur2;
+    }
+
+    /**
+     * Set etat
+     *
+     * @param integer $etat
+     * @return Game
+     */
+    public function setEtat($etat)
+    {
+        $this->etat = $etat;
+
+        return $this;
+    }
+
+    /**
+     * Get etat
+     *
+     * @return integer 
+     */
+    public function getEtat()
+    {
+        return $this->etat;
     }
 }
