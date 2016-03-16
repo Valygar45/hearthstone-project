@@ -28,10 +28,10 @@ class BinaryTreeController extends Controller
     public function treeAction(Competition $competition)
     {
         $tree = $this->container->get('cp_competition.binarytree');
-        if($competition->getType()=="simple"){
+        if($competition->getType()=="treeSimple" || $competition->getType()=='roundRobinSimple'){
             $jstab = $tree->SimpleTreeJS($competition->getId());
         }
-        else if($competition->getType()=="double"){
+        else if($competition->getType()=="treeDouble" || $competition->getType()=='roundRobinDouble'){
             $jstab = $tree->DoubleTreeJS($competition->getId());
         }
 
@@ -62,9 +62,11 @@ class BinaryTreeController extends Controller
             ->add('Créer',      'submit')
             ->add('type', 'choice', array(
                 'choices'  => array(
-                    'simple' => "Simple Elimination Bracket",
-                    'double' => "Double Elimination Bracket",
-
+                    'treeSimple' => "Simple Elimination Bracket",
+                    'treeDouble' => "Double Elimination Bracket",
+                    'roundRobinSimple' => "Round Robin + Simple Elimination Bracket",
+                    'roundRobinDouble' => "Round Robin + Double Elimination Bracket",
+                    'league' => "League"
                 ),
             ))
         ;
@@ -85,20 +87,38 @@ class BinaryTreeController extends Controller
             $em->persist($competition);
             $tree = $this->container->get('cp_competition.binarytree');
             $players=array("Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8","Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8","Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8","Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8");
-
-            if($competition->getType()=="simple"){
+            $players = array_slice($players,0,$competition->getNbPlayers());
+            $competitionType = $competition->getType();
+            if( $competitionType=="treeSimple"){
                 $fatherRound = $tree->simpleTreeGenerator($competition->getNbPlayers(),$players);
+                $em->persist($fatherRound);
+                $competition->setFatherRound($fatherRound);
+                $em->flush();
+                return $this->redirect($this->generateUrl('cp_competition_tree',array('id'=>$competition->getId())));
             }
-            else if($competition->getType()=="double"){
+            else if( $competitionType=="treeDouble"){
                 $fatherRound = $tree->doubleTreeGenerator($competition->getNbPlayers(),$players);
+                $em->persist($fatherRound);
+                $competition->setFatherRound($fatherRound);
+                $em->flush();
+                return $this->redirect($this->generateUrl('cp_competition_tree',array('id'=>$competition->getId())));
             }
 
-            $em->persist($fatherRound);
-            $competition->setFatherRound($fatherRound);
-            $em->flush();
+            else if ( $competitionType=="roundRobinSimple" ||  $competitionType=="roundRobinDouble" ){
+                $roundRobin = $this->container->get('cp_competition.roundrobin');
+                $roundRobin->roundRobinGenerator($competition,$players,$competition->getNbPlayers());
+                return $this->redirect($this->generateUrl('cp_competition_roundrobinview',array('id'=>$competition->getId())));
+            }
+            else if ( $competitionType=="league" ){
+                $league = $this->container->get('cp_competition.league');
+                $league->LeagueGenerator($competition,$players,$competition->getNbPlayers());
+                return $this->redirect($this->generateUrl('cp_competition_leagueview',array('id'=>$competition->getId())));
+            }
 
 
-            return $this->redirect($this->generateUrl('cp_competition_tree',array('id'=>$competition->getId())));
+
+
+
 
             }
 
@@ -154,10 +174,10 @@ class BinaryTreeController extends Controller
             $tree = $this->container->get('cp_competition.binarytree');
             $emanage = $this->getDoctrine()->getManager();
             $emanage->persist($game);
-            if($competition->getType()=="simple"){
+            if($competition->getType()=="treeSimple"){
                 $tree->game_valid_simple($emanage,$game);
             }
-            else if($competition->getType()=="double"){
+            else if($competition->getType()=="treeDouble"){
                 $tree->game_valid_double($emanage,$game);
             }
 

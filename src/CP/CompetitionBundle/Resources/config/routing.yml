@@ -10,10 +10,16 @@ cp_competition_gametree:
 cp_competition_gameroundrobin:
     path:     /{id}/gameroundrobin/{game_id}
     defaults: { _controller: CPCompetitionBundle:RoundRobin:game }
-cp_competition_roundrobin:
-    path:     /roundrobin
-    defaults: { _controller: CPCompetitionBundle:RoundRobin:index }
 cp_competition_roundrobinview:
     path:      /{id}/roundrobinview
     defaults: { _controller: CPCompetitionBundle:RoundRobin:view }
+cp_competition_roundrobingenerate:
+    path:      /{id}/roundrobingenerate
+    defaults: { _controller: CPCompetitionBundle:RoundRobin:generate }
+cp_competition_leagueview:
+    path:      /{id}/leagueview
+    defaults: { _controller: CPCompetitionBundle:League:view }
+cp_competition_gameleague:
+    path:     /{id}/gameleague/{game_id}
+    defaults: { _controller: CPCompetitionBundle:League:game }
 

@@ -36,7 +36,7 @@ class RoundRobin
      */
     private $nbJoueurs;
     /**
-     * @ORM\ManyToMany(targetEntity="CP\CompetitionBundle\Entity\Round", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="CP\CompetitionBundle\Entity\Round", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumn(nullable=true)
      */
     private $rounds;

@@ -6,14 +6,14 @@
  * Time: 16:48
  */
 
-namespace CP\CompetitionBundle\RoundRobin;
+namespace CP\CompetitionBundle\League;
 
 use CP\CompetitionBundle\Entity\Game;
 use CP\CompetitionBundle\Entity\Round;
 use CP\CompetitionBundle\Entity\RoundRobin;
 use CP\CompetitionBundle\Entity\Competition;
 use Doctrine\ORM\Query\ResultSetMapping;
-class CPRoundRobin
+class CPLeague
 {
 
     private $doctrine;
@@ -27,25 +27,25 @@ class CPRoundRobin
 
     /**
      *
-     * Permet de génerer les roundRobin et donc de les ajouter à l'entité Competition
+     * Permet de génerer une league et donc d'ajouter l'objet RoundRobin à l'entité Competition
      * @param $competition
-     * @param $robinplayers
+     * @param $robinplayers Le tableau des joueurs
      * @param $size
      * @return mixed
      */
 
-    public function roundRobinGenerator($competition,$robinplayers,$size){
+    public function LeagueGenerator($competition,$robinplayers,$size){
         $this->em = $this->doctrine->getManager();
-        $nbRoundRobin = $size/4;
 
-        for($i=0;$i<$nbRoundRobin;$i++){
+
+
             $roundRobin = new RoundRobin();
-            $roundRobin->setName($i);
-            $roundRobin->setNbJoueurs(4);
+            $roundRobin->setName(0);
+            $roundRobin->setNbJoueurs($size);
             $this->em->persist($roundRobin);
-            $robinplayersSlice= array_slice($robinplayers,4*$i,4);
 
-            $rounds=$this->roundRobin($robinplayersSlice);
+
+            $rounds=$this->roundRobin($robinplayers);
             foreach($rounds as $day => $games){
                 foreach($games as $play){
                     $round = new Round();
@@ -61,7 +61,7 @@ class CPRoundRobin
             }
             $this->em->persist($competition);
             $competition->addRoundRobin($roundRobin);
-        }
+
         $this->em->flush();
         return $competition;
     }
@@ -119,7 +119,7 @@ class CPRoundRobin
     }
 
     /**
-     * Permet de calculer le classement des roundRobin à la volé par le biais d'une requete sql.
+     * Cette fonction effectue une requete SQL qui permet de calculer à la volé le classement de la league
      *
      * @param $competition
      * @return array
@@ -170,26 +170,5 @@ ORDER BY Points desc, diff desc";
 return $ranking;
 }
 
-    /**
-     * Vérifie si tous les matchs de la competition ont été joués.
-     * @param $competition
-     * @return mixed
-     */
-    public function findUncompleteGameRoundRobin($competition)
-    {
-        $this->em = $this->doctrine->getManager();
-        $sql= 'SELECT DISTINCT g.id FROM game g, competition c, round_robin rb, round r, round_robin_round rbr, competition_round_robin crb WHERE g.id=r.game_id and r.id=rbr.round_id and rbr.round_robin_id = rb.id and rb.id=crb.round_robin_id and c.id=crb.competition_id and c.id = ? and g.score IS NULL and g.score2 IS NULL';
-
-
-        $rsm = new ResultSetMapping;
-        $rsm->addScalarResult('id', 'id');
-        $query = $this->em->createNativeQuery($sql, $rsm);
-        $query->setParameter(1, $competition->getId());
-        $result=$query->getResult();
-        return $result
-            ;
-
-
-    }
 
 }

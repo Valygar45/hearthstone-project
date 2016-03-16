@@ -23,7 +23,7 @@ class CPBinaryTree
     }
 
     /**
-     * Fonction qui prend en entrée le nombre de joueurs du tournoi  ainsi que les joueurs et qui génère l'arbre correspondant.
+     * Fonction qui prend en entrée le nombre de joueurs du tournoi  ainsi que les joueurs et qui génère l'arbre  simple correspondant.
      * La fonction retourne le Round "father" qui est le niveau 0 de l'arbre et qui va permettre de parcourir toutes les branches de l'arbre
      *
      * @param $taille
@@ -43,6 +43,14 @@ class CPBinaryTree
     return $fatherRound;
 }
 
+
+    /**
+     * Permet de générer un arbre double
+     *
+     * @param $taille
+     * @param $players
+     * @return Round
+     */
 public function doubleTreeGenerator($taille, $players)
 {
     if( ($taille & ($taille - 1)) != 0){
@@ -223,6 +231,11 @@ $fatherRound = $competition->getFatherRound();
     return $jstab;
 }
 
+    /**
+     * Permet de convertir un arbre double en tableau JSON lisible par JBracket
+     * @param $competitionID
+     * @return array
+     */
     public function doubleTreeJS($competitionID){
         $repository = $this->doctrine->getManager()->getRepository('CPCompetitionBundle:Competition');
         $competition = $repository->find($competitionID);
@@ -280,6 +293,16 @@ $fatherRound = $competition->getFatherRound();
         return $mainRound;
     }
 
+    /**
+     * Fonction recursive qui va parcourir tout un arbre double en partant du fatherRound.
+     * Les différents Game parcourut sont ajoutés dans un tableau avec un indice pour chaque niveau de l'arbre.
+     *
+     * @param $round
+     * @param $level
+     * @param $tab
+     * @return mixed
+     */
+
     public function parcourir_arbre_double($round, $level, $tab){
 
         if(!isset($tab[$level])) {
@@ -308,7 +331,7 @@ $fatherRound = $competition->getFatherRound();
 
 
     /**
-     * Fonction recursive qui va parcourir tout un arbre en partant du fatherRound.
+     * Fonction recursive qui va parcourir tout un arbre  simple en partant du fatherRound.
      * Les différents Game parcourut sont ajoutés dans un tableau avec un indice pour chaque niveau de l'arbre.
      *
      * @param $round
@@ -373,6 +396,13 @@ $fatherRound = $competition->getFatherRound();
 
 }
 
+    /**
+     * Fonction qui va convertir le tableau généré par parcourir_arbre_double en tableau convertissable au format JSON et lisible par JBracket avec la fonction js_encode.
+     *
+     * @param $tab
+     * @return array
+     */
+
     public function bracketJSDataDouble($tabWinner,$tabLoser,$finalRound)
     {
         $json = array();
@@ -426,6 +456,13 @@ $fatherRound = $competition->getFatherRound();
 
     }
 
+    /**
+     *
+     * Permet de valier un objet Game dans le cas d'un arbre simple
+     * @param $emanage
+     * @param $game
+     */
+
     public function game_valid_simple($emanage, $game){
 
 
@@ -467,6 +504,12 @@ $fatherRound = $competition->getFatherRound();
 
         $emanage->flush();
 }
+    /**
+     *
+     * Permet de valier un objet Game dans le cas d'un arbre simple
+     * @param $emanage
+     * @param $game
+     */
     public function game_valid_double($emanage, $game){
 
 
