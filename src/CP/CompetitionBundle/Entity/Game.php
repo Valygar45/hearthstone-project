@@ -57,7 +57,7 @@ class Game
     /**
      * @var \CP\CompetitionBundle\Entity\Versus
      *
-     * @ORM\OneToMany(targetEntity="CP\CompetitionBundle\Entity\Versus", mappedBy="game")
+     * @ORM\OneToMany(targetEntity="CP\CompetitionBundle\Entity\Versus", mappedBy="game", cascade={"persist"})
      */
     private $Versuss;
 
