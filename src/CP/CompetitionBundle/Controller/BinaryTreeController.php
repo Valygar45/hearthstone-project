@@ -28,87 +28,16 @@ class BinaryTreeController extends Controller
     public function treeAction(Competition $competition)
     {
         $tree = $this->container->get('cp_competition.binarytree');
-        if($competition->getType()=="simple"){
+        if($competition->getType()=="treeSimple" || $competition->getType()=='roundRobinSimple'){
             $jstab = $tree->SimpleTreeJS($competition->getId());
         }
-        else if($competition->getType()=="double"){
+        else if($competition->getType()=="treeDouble" || $competition->getType()=='roundRobinDouble'){
             $jstab = $tree->DoubleTreeJS($competition->getId());
         }
 
         return $this->render('CPCompetitionBundle:BinaryTree:tree.html.twig',array("bracketJSON"=>$jstab,"competitionType"=>$competition->getType()));
     }
 
-    /**
-     * Permet de créer une nouvelle compétition et de génerer l'arbre associé.
-     *
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     */
-    public function newAction(Request $request)
-    {
-        $competition = new Competition();
-        // On crée le FormBuilder grâce au service form factory
-        $formBuilder = $this->get('form.factory')->createBuilder('form', $competition);
-
-        // On ajoute les champs de l'entité que l'on veut à notre formulaire
-        $formBuilder
-            ->add('name',      'text')
-            ->add('description',     'text')
-            ->add('news',   'text')
-            ->add('type',    'text')
-            ->add('dateCreate',      'datetime')
-            ->add('state',      'text')
-            ->add('nbPlayers',      'integer')
-            ->add('Créer',      'submit')
-            ->add('type', 'choice', array(
-                'choices'  => array(
-                    'simple' => "Simple Elimination Bracket",
-                    'double' => "Double Elimination Bracket",
-
-                ),
-            ))
-        ;
-
-
-        // À partir du formBuilder, on génère le formulaire
-        $form = $formBuilder->getForm();
-
-        // On fait le lien Requête <-> Formulaire
-
-        $form->handleRequest($request);
-
-        // On vérifie que les valeurs entrées sont correctes
-
-        if ($form->isValid()) {
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($competition);
-            $tree = $this->container->get('cp_competition.binarytree');
-            $players=array("Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8","Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8","Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8","Marseille1","Paris2","Monaco3","Caen4","Toulouse5","Troyes6","Barcelone7","Juventus8");
-
-            if($competition->getType()=="simple"){
-                $fatherRound = $tree->simpleTreeGenerator($competition->getNbPlayers(),$players);
-            }
-            else if($competition->getType()=="double"){
-                $fatherRound = $tree->doubleTreeGenerator($competition->getNbPlayers(),$players);
-            }
-
-            $em->persist($fatherRound);
-            $competition->setFatherRound($fatherRound);
-            $em->flush();
-
-
-            return $this->redirect($this->generateUrl('cp_competition_tree',array('id'=>$competition->getId())));
-
-            }
-
-// On passe la méthode createView() du formulaire à la vue
-        // afin qu'elle puisse afficher le formulaire toute seule
-        return $this->render('CPCompetitionBundle:BinaryTree:new.html.twig', array(
-            'form' => $form->createView(),
-        ));
-
-    }
 
     /**
      * Formulaire qui va permettre d'afficher un Game et de le modifier si les droits de l'utilisateur le permet.
@@ -132,8 +61,8 @@ class BinaryTreeController extends Controller
 
         // On ajoute les champs de l'entité que l'on veut à notre formulaire
         $formBuilder
-            ->add('team1',      'text')
-            ->add('team2',     'text')
+            ->add('joueur1',      'text')
+            ->add('joueur2',     'text')
             ->add('score1',   'text')
             ->add('score2',    'text')
             ->add('save',      'submit')
@@ -154,12 +83,13 @@ class BinaryTreeController extends Controller
             $tree = $this->container->get('cp_competition.binarytree');
             $emanage = $this->getDoctrine()->getManager();
             $emanage->persist($game);
-            if($competition->getType()=="simple"){
+            if($competition->getType()=="treeSimple"){
                 $tree->game_valid_simple($emanage,$game);
             }
-            else if($competition->getType()=="double"){
+            else if($competition->getType()=="treeDouble"){
                 $tree->game_valid_double($emanage,$game);
             }
+
 
             return $this->redirect($this->generateUrl('cp_competition_tree',array("id"=>$competition->getId())));
         }

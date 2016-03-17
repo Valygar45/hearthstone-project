@@ -3,6 +3,7 @@
 namespace CP\CompetitionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Competition
@@ -20,6 +21,29 @@ class Competition
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CP\UserBundle\Entity\User")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $creator;
+
+    /**
+     * @return mixed
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
+    /**
+     * @param mixed $creator
+     */
+    public function setCreator($creator)
+    {
+        $this->creator = $creator;
+    }
 
     /**
      * @var string
@@ -51,8 +75,7 @@ class Competition
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="dateCreate", type="date")
+     * @ORM\Column(name="dateCreate", type="date",  nullable=true)
      */
     private $dateCreate;
 
@@ -81,6 +104,42 @@ class Competition
      * @ORM\JoinColumn(nullable=true)
      */
     private $fatherRound;
+
+
+
+    /**
+     * @ORM\ManyToMany(targetEntity="CP\CompetitionBundle\Entity\RoundRobin", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $roundRobins;
+
+    /**
+     * @return mixed
+     */
+    public function getRoundRobins()
+    {
+        return $this->roundRobins;
+    }
+
+    /**
+     * @param mixed $roundRobin
+     */
+    public function addRoundRobin(RoundRobin $roundRobin)
+    {
+        $this->roundRobins[]  = $roundRobin;
+        return $this;
+    }
+
+    public function removeRoundRobin(RoundRobin $roundRobin){
+    $this->roundRobins->removeElement($roundRobin);
+}
+
+    public function __construct()
+    {
+
+        $this->roundRobins = new ArrayCollection();
+        $this->players = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * @ORM\ManyToMany(targetEntity="CP\UserBundle\Entity\User", cascade={"persist"})
@@ -269,13 +328,7 @@ class Competition
         return $this->nbPlayers;
     }
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->players = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+
 
     /**
      * Add players

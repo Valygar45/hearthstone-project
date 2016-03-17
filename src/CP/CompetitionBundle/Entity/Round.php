@@ -46,7 +46,7 @@ class Round
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="CP\CompetitionBundle\Entity\Game",cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="CP\CompetitionBundle\Entity\Game",cascade={"persist"},fetch="EAGER")
      * @ORM\JoinColumn(nullable=true)
      */
     private $game;

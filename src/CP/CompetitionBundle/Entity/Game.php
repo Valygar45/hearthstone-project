@@ -50,7 +50,7 @@ class Game
     /**
      * @var integer
      *
-     * @ORM\Column(name="etat", type="integer", nullable=false)
+     * @ORM\Column(name="etat", type="integer", nullable=true)
      */
     private $etat;
 
@@ -191,6 +191,7 @@ class Game
     public function __construct()
     {
         $this->Versuss = new \Doctrine\Common\Collections\ArrayCollection();
+
     }
 
     /**

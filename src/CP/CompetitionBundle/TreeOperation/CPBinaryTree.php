@@ -23,7 +23,7 @@ class CPBinaryTree
     }
 
     /**
-     * Fonction qui prend en entrée le nombre de joueurs du tournoi  ainsi que les joueurs et qui génère l'arbre correspondant.
+     * Fonction qui prend en entrée le nombre de joueurs du tournoi  ainsi que les joueurs et qui génère l'arbre  simple correspondant.
      * La fonction retourne le Round "father" qui est le niveau 0 de l'arbre et qui va permettre de parcourir toutes les branches de l'arbre
      *
      * @param $taille
@@ -43,6 +43,14 @@ class CPBinaryTree
     return $fatherRound;
 }
 
+
+    /**
+     * Permet de générer un arbre double
+     *
+     * @param $taille
+     * @param $players
+     * @return Round
+     */
 public function doubleTreeGenerator($taille, $players)
 {
     if( ($taille & ($taille - 1)) != 0){
@@ -223,6 +231,11 @@ $fatherRound = $competition->getFatherRound();
     return $jstab;
 }
 
+    /**
+     * Permet de convertir un arbre double en tableau JSON lisible par JBracket
+     * @param $competitionID
+     * @return array
+     */
     public function doubleTreeJS($competitionID){
         $repository = $this->doctrine->getManager()->getRepository('CPCompetitionBundle:Competition');
         $competition = $repository->find($competitionID);
@@ -260,8 +273,8 @@ $fatherRound = $competition->getFatherRound();
 
         if ($taille <= 2) {
             $game = new Game();
-            $game->setTeam1($this->players[0]);
-            $game->setTeam2($this->players[1]);
+            $game->setJoueur1($this->players[0]);
+            $game->setJoueur2($this->players[1]);
             $game->setScore1(null);
             $game->setScore2(null);
             $mainRound->setGame($game);
@@ -279,6 +292,16 @@ $fatherRound = $competition->getFatherRound();
         }
         return $mainRound;
     }
+
+    /**
+     * Fonction recursive qui va parcourir tout un arbre double en partant du fatherRound.
+     * Les différents Game parcourut sont ajoutés dans un tableau avec un indice pour chaque niveau de l'arbre.
+     *
+     * @param $round
+     * @param $level
+     * @param $tab
+     * @return mixed
+     */
 
     public function parcourir_arbre_double($round, $level, $tab){
 
@@ -308,7 +331,7 @@ $fatherRound = $competition->getFatherRound();
 
 
     /**
-     * Fonction recursive qui va parcourir tout un arbre en partant du fatherRound.
+     * Fonction recursive qui va parcourir tout un arbre  simple en partant du fatherRound.
      * Les différents Game parcourut sont ajoutés dans un tableau avec un indice pour chaque niveau de l'arbre.
      *
      * @param $round
@@ -349,7 +372,7 @@ $fatherRound = $competition->getFatherRound();
     $json = array();
     $json["teams"] = array();
     for ($i = 0; $i < count($tab[count($tab) - 1]); $i = $i + 1) {
-        $matchup = array($tab[count($tab) - 1][$i]->getGame()->getTeam1(), $tab[count($tab) - 1][$i]->getGame()->getTeam2());
+        $matchup = array($tab[count($tab) - 1][$i]->getGame()->getJoueur1()->getUsername(), $tab[count($tab) - 1][$i]->getGame()->getJoueur2()->getUsername());
         $json["teams"][$i] = $matchup;
     }
 
@@ -373,12 +396,19 @@ $fatherRound = $competition->getFatherRound();
 
 }
 
+    /**
+     * Fonction qui va convertir le tableau généré par parcourir_arbre_double en tableau convertissable au format JSON et lisible par JBracket avec la fonction js_encode.
+     *
+     * @param $tab
+     * @return array
+     */
+
     public function bracketJSDataDouble($tabWinner,$tabLoser,$finalRound)
     {
         $json = array();
         $json["teams"] = array();
         for ($i = 0; $i < count($tabWinner[count($tabWinner) - 1]); $i = $i + 1) {
-            $matchup = array($tabWinner[count($tabWinner) - 1][$i]->getGame()->getTeam1(), $tabWinner[count($tabWinner) - 1][$i]->getGame()->getTeam2());
+            $matchup = array($tabWinner[count($tabWinner) - 1][$i]->getGame()->getJoueur1()->getUsername(), $tabWinner[count($tabWinner) - 1][$i]->getGame()->getJoueur2()->getUsername());
             $json["teams"][$i] = $matchup;
         }
 
@@ -426,17 +456,24 @@ $fatherRound = $competition->getFatherRound();
 
     }
 
+    /**
+     *
+     * Permet de valier un objet Game dans le cas d'un arbre simple
+     * @param $emanage
+     * @param $game
+     */
+
     public function game_valid_simple($emanage, $game){
 
 
         if($game->getScore1()>$game->getScore2()){
-            $winner = $game->getTeam1();
+            $winner = $game->getJoueur1();
         }
         else if($game->getScore1()==$game->getScore2()){
             $winner = false;
         }
         else {
-            $winner = $game->getTeam2();
+            $winner = $game->getJoueur2();
         }
 
         $round = $emanage->getRepository('CPCompetitionBundle:Round')->findOneByGame($game->getId());
@@ -458,28 +495,34 @@ $fatherRound = $competition->getFatherRound();
                 $nextRound->setGame($nextGame);
                 if ($nextRound->getRightRound() == $round) {
 
-                    $nextGame->setTeam1($winner);
+                    $nextGame->setJoueur1($winner);
                 } else {
-                    $nextGame->setTeam2($winner);
+                    $nextGame->setJoueur2($winner);
                 }
             }
         }
 
         $emanage->flush();
 }
+    /**
+     *
+     * Permet de valier un objet Game dans le cas d'un arbre simple
+     * @param $emanage
+     * @param $game
+     */
     public function game_valid_double($emanage, $game){
 
 
         if($game->getScore1()>$game->getScore2()){
-            $winner = $game->getTeam1();
-            $loser = $game->getTeam2();
+            $winner = $game->getJoueur1();
+            $loser = $game->getJoueur2();
         }
         else if($game->getScore1()==$game->getScore2()){
             $winner = false;
         }
         else {
-            $winner = $game->getTeam2();
-            $loser = $game->getTeam1();
+            $winner = $game->getJoueur2();
+            $loser = $game->getJoueur1();
         }
 
         $round = $emanage->getRepository('CPCompetitionBundle:Round')->findOneByGame($game->getId());
@@ -501,9 +544,9 @@ $fatherRound = $competition->getFatherRound();
                 $nextRound->setGame($nextGame);
                 if ($nextRound->getRightRound() == $round) {
 
-                    $nextGame->setTeam1($winner);
+                    $nextGame->setJoueur1($winner);
                 } else {
-                    $nextGame->setTeam2($winner);
+                    $nextGame->setJoueur2($winner);
                 }
             }
 
@@ -520,9 +563,9 @@ $fatherRound = $competition->getFatherRound();
                 $loserRound->setGame($loserGame);
                 if ($loserRound->getRightRound() == $round) {
 
-                    $loserGame->setTeam1($loser);
+                    $loserGame->setJoueur1($loser);
                 } else {
-                    $loserGame->setTeam2($loser);
+                    $loserGame->setJoueur2($loser);
                 }
             }
 

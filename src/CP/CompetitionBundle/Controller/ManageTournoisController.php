@@ -3,6 +3,7 @@
 namespace CP\CompetitionBundle\Controller;
 
 use CP\CompetitionBundle\Entity\Versus;
+use CP\CompetitionBundle\Entity\Competition;
 use CP\CompetitionBundle\Form\GameType;
 use CP\CompetitionBundle\Form\VersusType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -119,5 +120,69 @@ class ManageTournoisController extends Controller
 
         return $this->render('CPCompetitionBundle:ManageTournois:viewPastGames.html.twig', array('user' => $user, 'games' => $listGamesMerged));
     }
+
+    public function myTournamentsAction(){
+
+        $em = $this->getDoctrine()->getManager();
+        $tournois = $em->getRepository('CPCompetitionBundle:Competition')->findByCreator($this->getUser());
+        return $this->render('CPCompetitionBundle:ManageTournois:viewMyTournois.html.twig', array('listTournois' => $tournois));
+
+    }
+    /**
+     * Permet de génerer la structure associé à la competition quand elle est complete.
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function generateAction(Competition $competition)
+    {
+
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($competition);
+        $tree = $this->container->get('cp_competition.binarytree');
+        $players =$competition->getPlayers();
+        $players = $players->toArray();
+
+        /* //test
+         $playerstest = array();
+         $repository = $this->getDoctrine()->getManager()->getRepository('CPUserBundle:User');
+
+         for($i=1;$i<=4;$i++){
+             $playerstest[] = $repository->find($i);
+         }
+
+*/
+        $players = array_slice($players,0,$competition->getNbPlayers());
+        $competitionType = $competition->getType();
+
+        if( $competitionType=="treeSimple"){
+            $fatherRound = $tree->simpleTreeGenerator($competition->getNbPlayers(),$players);
+            $em->persist($fatherRound);
+            $competition->setFatherRound($fatherRound);
+            $em->flush();
+            return $this->redirect($this->generateUrl('cp_competition_tree',array('id'=>$competition->getId())));
+        }
+        else if( $competitionType=="treeDouble"){
+            $fatherRound = $tree->doubleTreeGenerator($competition->getNbPlayers(),$players);
+            $em->persist($fatherRound);
+            $competition->setFatherRound($fatherRound);
+            $em->flush();
+            return $this->redirect($this->generateUrl('cp_competition_tree',array('id'=>$competition->getId())));
+        }
+
+        else if ( $competitionType=="roundRobinSimple" ||  $competitionType=="roundRobinDouble" ){
+            $roundRobin = $this->container->get('cp_competition.roundrobin');
+            $roundRobin->roundRobinGenerator($competition,$players,$competition->getNbPlayers());
+            return $this->redirect($this->generateUrl('cp_competition_roundrobinview',array('id'=>$competition->getId())));
+        }
+        else if ( $competitionType=="league" ){
+            $league = $this->container->get('cp_competition.league');
+            $league->LeagueGenerator($competition,$players,$competition->getNbPlayers());
+            return $this->redirect($this->generateUrl('cp_competition_leagueview',array('id'=>$competition->getId())));
+        }
+
+    }
+
 
 }

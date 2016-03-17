@@ -1,0 +1,54 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/cpcompetition/css/jquery.bracket.min.css') }}" />
+
+
+<script type="text/javascript" src="{{ asset('bundles/cpcompetition/js/jquery-1.6.2.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/cpcompetition/js/jquery.bracket.min.js') }}"></script>
+</head>
+<body>
+
+
+    <p>League</p>
+
+    <table>
+        <tr>
+            <th>Utilisateur</th>
+            <th>Points</th>
+            <th>Différence de but</th>
+            </tr>
+            {% for user in rank[0] %}
+                <tr>
+                <td>{{ user.team  }}</td>
+                <td>{{ user.points  }}</td>
+                <td>{{ user.diff }}</td>
+                </tr>
+                {% endfor %}
+</table>
+
+
+
+        </tr>
+
+
+    </table>
+
+
+    <ul>
+    {% for day,rounds in competition.roundrobins[0].rounds %}
+
+        <p> Journée : {{ day+1 }} :</p>
+        {% for round in rounds %}
+            <li><a href="{{ path('cp_competition_gameleague', { 'id': competition.id, 'game_id': round.game.id }) }}">{{ round.game.joueur1.username }} {{ round.game.score1 }} - {{ round.game.score2 }} {{ round.game.joueur2.username }}</a> </li>
+
+        {% endfor %}
+
+
+
+    </ul>
+
+{% endfor %}
+
+
+</body>
+</html>

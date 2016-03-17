@@ -2,3 +2,9 @@ services:
   cp_competition.binarytree:
     class: CP\CompetitionBundle\TreeOperation\CPBinaryTree
     arguments: [@doctrine]
+  cp_competition.roundrobin:
+      class: CP\CompetitionBundle\RoundRobin\CPRoundRobin
+      arguments: [@doctrine]
+  cp_competition.league:
+        class: CP\CompetitionBundle\League\CPLeague
+        arguments: [@doctrine]

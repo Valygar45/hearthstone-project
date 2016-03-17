@@ -1,0 +1,64 @@
+<html>
+<body>
+<table>
+    <tr>
+        <th>
+            Nom du tournois
+        </th>
+        <th>
+            description
+        </th>
+        <th>
+            news
+        </th>
+        <th>
+            type
+        </th>
+        <th>
+            date de création
+        </th>
+        <th>
+            état
+        </th>
+        <th>
+            nombre de joueurs
+        </th>
+    </tr>
+{% for tournois in listTournois %}
+    <tr>
+        <td>
+            {{ tournois.name }}
+        </td>
+        <td>
+            {{ tournois.description }}
+        </td>
+        <td>
+            {{ tournois.news }}
+        </td>
+        <td>
+            {{ tournois.type }}
+        </td>
+        <td>
+            {{ tournois.dateCreate|date('d-m-Y') }}
+        </td>
+        <td>
+            {{ tournois.state }}
+        </td>
+        <td>
+            {{ tournois.players.count }}/{{ tournois.nbPlayers }}
+        </td>
+        <td>
+        {% if  tournois.players.count == tournois.nbPlayers %}
+            <a href="{{ path('cp_competition_generateTournoi', {'id': tournois.id}) }}">
+                Commencer le tournoi
+            </a>
+        {% else %}
+            Vous êtes déjà inscrit
+        {% endif %}
+        </td>
+    </tr>
+{% endfor %}
+</table>
+
+</body>
+</html>

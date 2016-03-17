@@ -9,7 +9,7 @@ class ProfilController extends Controller
 {
     public function profilAction()
     {
-        $userManager = $this->get('fos_user.user_manager');
+        //$userManager = $this->get('fos_user.user_manager');
         $user = $this->getUser();
         //$user->addTrophy('uttarena', 'premier');
         //$userManager->updateUser($user);

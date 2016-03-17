@@ -3,10 +3,25 @@ cp_competition_tree:
     defaults: { _controller: CPCompetitionBundle:BinaryTree:tree }
 cp_competition_new:
     path:     /new
-    defaults: { _controller: CPCompetitionBundle:BinaryTree:new }
-cp_competition_game:
-    path:     /{id}/game/{game_id}
+    defaults: { _controller: CPCompetitionBundle:CreateTournois:new }
+cp_competition_gametree:
+    path:     /{id}/gametree/{game_id}
     defaults: { _controller: CPCompetitionBundle:BinaryTree:game }
+cp_competition_gameroundrobin:
+    path:     /{id}/gameroundrobin/{game_id}
+    defaults: { _controller: CPCompetitionBundle:RoundRobin:game }
+cp_competition_roundrobinview:
+    path:      /{id}/roundrobinview
+    defaults: { _controller: CPCompetitionBundle:RoundRobin:view }
+cp_competition_roundrobingenerate:
+    path:      /{id}/roundrobingenerate
+    defaults: { _controller: CPCompetitionBundle:RoundRobin:generate }
+cp_competition_leagueview:
+    path:      /{id}/leagueview
+    defaults: { _controller: CPCompetitionBundle:League:view }
+cp_competition_gameleague:
+    path:     /{id}/gameleague/{game_id}
+    defaults: { _controller: CPCompetitionBundle:League:game }
 cp_competition_viewTournois:
     path:     /viewTournois
     defaults: { _controller: CPCompetitionBundle:RegisterTournois:view }
@@ -28,3 +43,9 @@ cp_competition_viewPastGames:
 cp_competition_adminViewGames:
     path:     /adminViewGames
     defaults: { _controller: CPCompetitionBundle:AdminManageTournois:adminViewGames }
+cp_competition_viewMyTournois:
+    path:     /viewMyTournois
+    defaults: { _controller: CPCompetitionBundle:ManageTournois:myTournaments }
+cp_competition_generateTournoi:
+    path:     /{id}/generatetree
+    defaults: { _controller: CPCompetitionBundle:ManageTournois:generate }

@@ -16,7 +16,7 @@
     <script type="text/javascript">
     var minimalData = {{ bracketJSON|json_encode()|raw }}
     var doublebool = false;
-    if('{{ competitionType }}'==='double')
+    if('{{ competitionType }}'==='treeDouble')
     {
         doublebool = true;
     }
@@ -33,7 +33,7 @@
     })
     function onclick(data) {
         if(data!==null && data!==undefined) {
-            document.location.href = 'game/' + data
+            document.location.href = 'gametree/' + data
         }
     }
     </script>
