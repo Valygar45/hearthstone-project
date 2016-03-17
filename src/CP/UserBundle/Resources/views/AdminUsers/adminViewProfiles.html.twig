@@ -1,0 +1,39 @@
+<html>
+<body>
+<table>
+    Utilisateurs enregistrés:<br>
+    <tr>
+        <th>User Id</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Enabled</th>
+        <th>Last login</th>
+        <th>Locked</th>
+        <th>expired</th>
+        <th>roles</th>
+        <th>dateInscription</th>
+    </tr>
+    {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>
+                <a href="{{ path('cp_user_checkProfile', {'id': user.id}) }}">
+                    {{ user.username }}
+                </a>
+            </td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.enabled }}</td>
+            <td>{{ user.lastlogin|date('Y-m-d') }}</td>
+            <td>{{ user.locked }}</td>
+            <td>{{ user.expired }}</td>
+            <td>
+                {% for role in user.roles %}
+                    <li>{{ role }}</li>
+                {% endfor %}
+            </td>
+            <td>{{ user.date_inscription|date('Y-m-d') }}</td>
+        </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

@@ -16,9 +16,15 @@ cp_competition_inscription:
 cp_competition_viewGames:
     path:     /viewGames
     defaults: { _controller: CPCompetitionBundle:ManageTournois:view }
+cp_competition_uploadScreenshots:
+    path:     /uploadScreenshots/{id}
+    defaults: { _controller: CPCompetitionBundle:ManageTournois:uploadScreenshots }
 cp_competition_validation:
     path:     /validation/{id}
     defaults: { _controller: CPCompetitionBundle:ManageTournois:validateScore }
 cp_competition_viewPastGames:
     path:     /viewPastGames
     defaults: { _controller: CPCompetitionBundle:ManageTournois:viewPastGames }
+cp_competition_adminViewGames:
+    path:     /adminViewGames
+    defaults: { _controller: CPCompetitionBundle:AdminManageTournois:adminViewGames }

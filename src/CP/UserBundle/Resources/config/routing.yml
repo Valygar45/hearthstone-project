@@ -4,3 +4,6 @@ cp_user_profil:
 cp_user_checkProfile:
     path: /checkProfile/{id}
     defaults: { _controller: CPUserBundle:Profil:checkProfile }
+cp_user_adminViewProfiles:
+    path: /adminViewProfiles
+    defaults: { _controller: CPUserBundle:AdminProfile:adminViewProfiles }

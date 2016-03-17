@@ -37,14 +37,10 @@
             <td>
                 {{ game.score2 }}
             </td>
+
             {% else %}
-                <form action="{{ path('cp_competition_validation', {'id': game.id}) }}" method="post">
-                    <td>
-                        <input type="number" name="score1">
-                    </td>
-                    <td>
-                        <input type="number" name="score2">
-                    </td>
+                <td>A remplir</td>
+                <td>A remplir</td>
             {% endif %}
             <td>
                 {{ game.joueur2 }}
@@ -54,7 +50,10 @@
             </td>
             {% if game.etat == 2 %}
                 <td>
-                    <input type="submit" value="Valider le score"/>
+                    <form action="{{ path('cp_competition_uploadScreenshots', {'id': game.id}) }}" method="post">
+                        Quantity (between 1 and 5):
+                        <input type="number" name="nbVersus" min="1">
+                        <input type="submit" value="valider le score"/>
                     </form>
                 </td>
             {% endif %}

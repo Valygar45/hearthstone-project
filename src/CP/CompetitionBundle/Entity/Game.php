@@ -55,6 +55,13 @@ class Game
     private $etat;
 
     /**
+     * @var \CP\CompetitionBundle\Entity\Versus
+     *
+     * @ORM\OneToMany(targetEntity="CP\CompetitionBundle\Entity\Versus", mappedBy="game")
+     */
+    private $Versuss;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -177,5 +184,45 @@ class Game
     public function getEtat()
     {
         return $this->etat;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->Versuss = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add Versuss
+     *
+     * @param \CP\CompetitionBundle\Entity\Versus $versuss
+     * @return Game
+     */
+    public function addVersuss(\CP\CompetitionBundle\Entity\Versus $versuss)
+    {
+        $this->Versuss->add($versuss);
+
+        return $this;
+    }
+
+    /**
+     * Remove Versuss
+     *
+     * @param \CP\CompetitionBundle\Entity\Versus $versuss
+     */
+    public function removeVersuss(\CP\CompetitionBundle\Entity\Versus $versuss)
+    {
+        $this->Versuss->removeElement($versuss);
+    }
+
+    /**
+     * Get Versus
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getVersuss()
+    {
+        return $this->Versuss;
     }
 }

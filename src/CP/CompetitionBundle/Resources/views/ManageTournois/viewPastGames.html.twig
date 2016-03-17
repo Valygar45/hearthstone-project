@@ -47,7 +47,7 @@
                     {% if game.joueur2.id == user.id %}
                         {{ game.joueur2 }}
                     {% else %}
-                        <a href="{{ path('cp_user_checkProfile', {'id': game.joueur1.id}) }}">
+                        <a href="{{ path('cp_user_checkProfile', {'id': game.joueur2.id}) }}">
                             {{ game.joueur2 }}
                         </a>
                     {% endif %}
