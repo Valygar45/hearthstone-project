@@ -54,6 +54,7 @@ class CPRoundRobin
                     $game = new Game();
                     $game->setJoueur1($play["Home"]);
                     $game->setJoueur2($play["Away"]);
+                    $game->setEtat(1);
                     $round->setGame($game);
                     $roundRobin->addRound($round);
 

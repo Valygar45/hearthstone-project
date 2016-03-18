@@ -277,6 +277,7 @@ $fatherRound = $competition->getFatherRound();
             $game->setJoueur2($this->players[1]);
             $game->setScore1(null);
             $game->setScore2(null);
+            $game->setEtat(1);
             $mainRound->setGame($game);
 
             unset($this->players[0]);
@@ -489,6 +490,7 @@ $fatherRound = $competition->getFatherRound();
                 $nextGame = $nextRound->getGame();
                 if ($nextGame == null) {
                     $nextGame = new Game();
+                    $game->setEtat(1);
                 }
 
                 $emanage->persist($nextGame);
@@ -538,6 +540,7 @@ $fatherRound = $competition->getFatherRound();
                 $nextGame = $nextRound->getGame();
                 if ($nextGame == null) {
                     $nextGame = new Game();
+                    $game->setEtat(1);
                 }
 
                 $emanage->persist($nextGame);
@@ -557,6 +560,7 @@ $fatherRound = $competition->getFatherRound();
                 $loserGame = $loserRound->getGame();
                 if ($loserGame == null) {
                     $loserGame = new Game();
+                    $game->setEtat(1);
                 }
 
                 $emanage->persist($loserGame);
