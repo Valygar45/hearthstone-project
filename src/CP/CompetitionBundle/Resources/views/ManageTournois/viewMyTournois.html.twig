@@ -48,12 +48,14 @@
             {{ tournois.players.count }}/{{ tournois.nbPlayers }}
         </td>
         <td>
-        {% if  tournois.players.count == tournois.nbPlayers %}
+        {% if  tournois.players.count == tournois.nbPlayers and tournois.state == 0 %}
             <a href="{{ path('cp_competition_generateTournoi', {'id': tournois.id}) }}">
                 Commencer le tournoi
             </a>
-        {% else %}
-            Vous êtes déjà inscrit
+        {% elseif tournois.state == 1 %}
+            Le tournoi est en cours
+        {% elseif tournois.state == 2 %}
+            Le tournoi est terminé
         {% endif %}
         </td>
     </tr>

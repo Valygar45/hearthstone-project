@@ -83,7 +83,23 @@ class BinaryTreeController extends Controller
             $tree = $this->container->get('cp_competition.binarytree');
             $emanage = $this->getDoctrine()->getManager();
             $emanage->persist($game);
-            if($competition->getType()=="treeSimple"){
+
+            if($competition->getFatherRound()->getGame()==$game){
+                if($game->getScore1()>$game->getScore2()){
+                    $winner = $game->getJoueur1();
+                }
+                else if($game->getScore1()==$game->getScore2()){
+                    $winner = false;
+                }
+                else {
+                    $winner = $game->getJoueur2();
+                }
+
+                $winner->addTrophy($competition,1);
+                $competition->setState(2);
+            }
+
+            else if($competition->getType()=="treeSimple"){
                 $tree->game_valid_simple($emanage,$game);
             }
             else if($competition->getType()=="treeDouble"){

@@ -80,9 +80,9 @@ class Competition
     private $dateCreate;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="state", type="string", length=255)
+     * @ORM\Column(name="state", type="integer")
      */
     private $state;
 
@@ -285,7 +285,7 @@ class Competition
     /**
      * Set state
      *
-     * @param string $state
+     * @param integer $state
      * @return Competition
      */
     public function setState($state)
@@ -298,7 +298,7 @@ class Competition
     /**
      * Get state
      *
-     * @return string 
+     * @return integer
      */
     public function getState()
     {

@@ -155,6 +155,7 @@ class ManageTournoisController extends Controller
 */
         $players = array_slice($players,0,$competition->getNbPlayers());
         $competitionType = $competition->getType();
+        $competition->setState(1);
 
         if( $competitionType=="treeSimple"){
             $fatherRound = $tree->simpleTreeGenerator($competition->getNbPlayers(),$players);

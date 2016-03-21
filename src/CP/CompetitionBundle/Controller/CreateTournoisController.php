@@ -49,6 +49,7 @@ class CreateTournoisController extends Controller
             $em = $this->getDoctrine()->getManager();
             $user = $this->getUser();
             $competition->setCreator($user);
+            $competition->setState(0);
             $em->persist($competition);
             $em->flush();
             return $this->redirect($this->generateUrl('cp_competition_viewTournois'));
