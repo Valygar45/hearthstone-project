@@ -180,6 +180,9 @@
         <th>
             Etat
         </th>
+        <th>
+            Valider le score
+        </th>
     </tr>
     {% for gamePlayed in gamesPlayed %}
     <tr>
@@ -208,6 +211,11 @@
         </td>
         <td>
             {{ gamePlayed.etat }}
+        </td>
+        <td>
+            <form action="{{ path('cp_competition_validateScore', {'id': gamePlayed.id}) }}" method="post">
+                <input type="submit" value="valider le score"/>
+            </form>
         </td>
     </tr>
     {% endfor %}

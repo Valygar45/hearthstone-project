@@ -49,9 +49,17 @@ class Versus
     private $game;
 
     /**
-     * @ORM\OneToOne(targetEntity="CP\CompetitionBundle\Entity\Screenshot", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="CP\CompetitionBundle\Entity\Screenshot", mappedBy="versus", cascade={"persist"})
+     *
      */
     private $screenshot;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="etat", type="integer")
+     */
+    private $etat;
 
     /**
      * Get id
@@ -176,5 +184,28 @@ class Versus
     public function getScreenshot()
     {
         return $this->screenshot;
+    }
+
+    /**
+     * Set etat
+     *
+     * @param integer $etat
+     * @return Versus
+     */
+    public function setEtat($etat)
+    {
+        $this->etat = $etat;
+
+        return $this;
+    }
+
+    /**
+     * Get etat
+     *
+     * @return integer 
+     */
+    public function getEtat()
+    {
+        return $this->etat;
     }
 }

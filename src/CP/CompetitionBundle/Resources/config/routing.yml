@@ -28,3 +28,12 @@ cp_competition_viewPastGames:
 cp_competition_adminViewGames:
     path:     /adminViewGames
     defaults: { _controller: CPCompetitionBundle:AdminManageTournois:adminViewGames }
+cp_competition_validateScore:
+    path:     /adminValidateScore/{id}
+    defaults: { _controller: CPCompetitionBundle:AdminManageTournois:adminValidateScore }
+cp_competition_adminSetScoreProblems:
+    path:     /adminSetScoreProblems/{id}
+    defaults: { _controller: CPCompetitionBundle:AdminManageTournois:adminSetScoreProblems }
+cp_competition_manageErrorsVersus:
+    path:     /manageErrorsVersus
+    defaults: { _controller: CPCompetitionBundle:PlayerManageGames:manageErrorsVersus}

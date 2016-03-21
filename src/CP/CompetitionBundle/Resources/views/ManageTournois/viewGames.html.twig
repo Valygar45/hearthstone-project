@@ -51,7 +51,6 @@
             {% if game.etat == 2 %}
                 <td>
                     <form action="{{ path('cp_competition_uploadScreenshots', {'id': game.id}) }}" method="post">
-                        Quantity (between 1 and 5):
                         <input type="number" name="nbVersus" min="1">
                         <input type="submit" value="valider le score"/>
                     </form>

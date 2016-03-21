@@ -50,7 +50,8 @@ class ManageTournoisController extends Controller
             //creation de l'objet versus
             ${'versus'.$nbVersusAdded} = new Versus();
             //ajout du numéro du versus
-            ${'versus'.$nbVersusAdded}->setNumber($nbVersusAdded);
+            ${'versus'.$nbVersusAdded}->setNumber($nbVersusAdded+1);
+            ${'versus'.$nbVersusAdded}->setGame($game);
 
             $game->addVersuss(${'versus'.$nbVersusAdded});
         }
@@ -65,13 +66,24 @@ class ManageTournoisController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            $listVersus = $game->getVersuss();
+            $i = 0;
+            foreach($listVersus as $v)
+            {
+                $i++;
+                $v->setGame($game);
+                $v->setNumber($i);
+                $v->setEtat(0);
+                $s = $v->getScreenshot();
+                $s->setVersus($v);
+            }
             $em->persist($game);
             $em->flush();
 
             $session = $this->getRequest()->getSession();
             $session->getFlashBag()->add('message', 'Game saved');
 
-            return $this->redirect($this->generateUrl('cp_competition_viewGames:'));
+            return $this->redirect($this->generateUrl('cp_competition_viewGames'));
         }
 
 
