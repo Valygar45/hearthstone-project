@@ -49,3 +49,12 @@ cp_competition_viewMyTournois:
 cp_competition_generateTournoi:
     path:     /{id}/generatetree
     defaults: { _controller: CPCompetitionBundle:ManageTournois:generate }
+cp_competition_validateScore:
+    path:     /adminValidateScore/{id}
+    defaults: { _controller: CPCompetitionBundle:AdminManageTournois:adminValidateScore }
+cp_competition_adminSetScoreProblems:
+    path:     /adminSetScoreProblems/{id}
+    defaults: { _controller: CPCompetitionBundle:AdminManageTournois:adminSetScoreProblems }
+cp_competition_manageErrorsVersus:
+    path:     /manageErrorsVersus
+    defaults: { _controller: CPCompetitionBundle:PlayerManageGames:manageErrorsVersus}

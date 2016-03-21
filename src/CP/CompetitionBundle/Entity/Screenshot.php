@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="CP\CompetitionBundle\Entity\ScreenshotRepository")
- * @ORM\HasLifecycleCallbacks
+ * @ORM\HasLifecycleCallbacks()
  */
 class Screenshot
 {
@@ -37,7 +37,18 @@ class Screenshot
      */
     private $alt;
 
+    /**
+     * @var \CP\CompetitionBundle\Entity\Versus
+     *
+     * @ORM\OneToOne(targetEntity="CP\CompetitionBundle\Entity\Versus", inversedBy="Screenshot")
+     * @ORM\JoinColumn(name="versus_id", referencedColumnName="id")
+     *
+     */
+    private $versus;
+
     private $file;
+
+    private $tempFilename;
 
     public function getFile()
     {
@@ -47,7 +58,81 @@ class Screenshot
     public function setFile(UploadedFile $file)
     {
         $this->file = $file;
+
+        // On vérifie si on avait déjà un fichier pour cette entité
+        if (null !== $this->url) {
+            // On sauvegarde l'extension du fichier pour le supprimer plus tard
+            $this->tempFilename = $this->url;
+
+            // On réinitialise les valeurs des attributs url et alt
+            $this->url = null;
+            $this->alt = null;
+        }
     }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function preUpload()
+    {
+        // Si jamais il n'y a pas de fichier (champ facultatif)
+        if (null === $this->file) {
+            return;
+        }
+
+        // Le nom du fichier est son id, on doit juste stocker également son extension
+        // Pour faire propre, on devrait renommer cet attribut en « extension », plutôt que « url »
+        $this->url = $this->file->guessExtension();
+
+        // Et on génère l'attribut alt de la balise <img>, à la valeur du nom du fichier sur le PC de l'internaute
+        $this->alt = $this->file->getClientOriginalName();
+    }
+
+    /**
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     */
+    public function upload()
+    {
+        // Si jamais il n'y a pas de fichier (champ facultatif)
+        if (null === $this->file) {
+            return;
+        }
+
+        // Si on avait un ancien fichier, on le supprime
+        if (null !== $this->tempFilename) {
+            $oldFile = $this->getUploadRootDir().'/'.$this->id.'.'.$this->tempFilename;
+            if (file_exists($oldFile)) {
+                unlink($oldFile);
+            }
+        }
+
+        // On déplace le fichier envoyé dans le répertoire de notre choix
+        $this->file->move(
+            $this->getUploadRootDir(), // Le répertoire de destination
+            $this->id.'.'.$this->url   // Le nom du fichier à créer, ici « id.extension »
+        );
+    }
+
+    public function getUploadDir()
+    {
+        // On retourne le chemin relatif vers l'image pour un navigateur
+        $v = $this->versus;
+        $id_v = $v->getId();
+        $score1 = $v->getScorej1();
+        $score2 = $v->getScorej2();
+        $g = $v->getGame();
+        $id_g = $g->getId();
+        return 'uploads/'.$id_g.'-'.$id_v.'_'.$score1.'-'.$score2;
+    }
+
+    protected function getUploadRootDir()
+    {
+        // On retourne le chemin relatif vers l'image pour notre code PHP
+        return __DIR__.'/../../../../web/'.$this->getUploadDir();
+    }
+
 
     /**
      * Get id
@@ -105,35 +190,27 @@ class Screenshot
         return $this->alt;
     }
 
-    public function upload()
+    /**
+     * Set versus
+     *
+     * @param \CP\CompetitionBundle\Entity\Versus $versus
+     * @return Screenshot
+     */
+    public function setVersus(\CP\CompetitionBundle\Entity\Versus $versus = null)
     {
-        // Si jamais il n'y a pas de fichier (champ facultatif), on ne fait rien
-        if (null === $this->file) {
-            return;
-        }
+        $this->versus = $versus;
 
-        // On récupère le nom original du fichier de l'internaute
-        $name = $this->file->getClientOriginalName();
-
-        // On déplace le fichier envoyé dans le répertoire de notre choix
-        $this->file->move($this->getUploadRootDir(), $name);
-
-        // On sauvegarde le nom de fichier dans notre attribut $url
-        $this->url = $name;
-
-        // On crée également le futur attribut alt de notre balise <img>
-        $this->alt = $name;
+        return $this;
     }
 
-    public function getUploadDir()
+    /**
+     * Get versus
+     *
+     * @return \CP\CompetitionBundle\Entity\Versus 
+     */
+    public function getVersus()
     {
-        // On retourne le chemin relatif vers l'image pour un navigateur (relatif au répertoire /web donc)
-        return 'uploads/img';
+        return $this->versus;
     }
 
-    protected function getUploadRootDir()
-    {
-        // On retourne le chemin relatif vers l'image pour notre code PHP
-        return __DIR__.'/../../../../web/'.$this->getUploadDir();
-    }
 }

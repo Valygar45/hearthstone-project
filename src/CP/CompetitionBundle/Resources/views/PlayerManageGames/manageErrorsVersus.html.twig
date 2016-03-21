@@ -1,0 +1,16 @@
+<html>
+<body>
+    {% for g in conflictualVersus %}
+        {% for cv in g %}
+        game ID:{{ cv.game.id }}<br>
+        versus numéro:{{ cv.number }}<br>
+        scoreJ1:{{ cv.scorej1 }}<br>
+        scoreJ2{{ cv.scorej2 }}<br>
+        Etat versus:{{ cv.etat }}<br><br><br>
+            <form action="{{ path('cp_competition_uploadScreenshots', {'id': cv.game.id}) }}" method="post">
+                <input type="submit" value="Réparer l'erreur"/>
+            </form>
+        {% endfor %}
+    {% endfor %}
+</body>
+</html>
