@@ -78,7 +78,54 @@ class ManageTournoisController extends Controller
                 $s = $v->getScreenshot();
                 $s->setVersus($v);
             }
+            $game->setEtat(2);
             $em->persist($game);
+
+
+/*
+            A Ajouter apres avoir recuperer l'entité competition
+
+            $competitionType=$competition->getType();
+
+            if($competitionType=="treeSimple" || $competitionType == "treeDouble"){
+                $tree = $this->container->get('cp_competition.binarytree');
+
+                if($competition->getFatherRound()->getGame()==$game){
+                    if($game->getScore1()>$game->getScore2()){
+                        $winner = $game->getJoueur1();
+                    }
+                    else if($game->getScore1()==$game->getScore2()){
+                        $winner = false;
+                    }
+                    else {
+                        $winner = $game->getJoueur2();
+                    }
+
+                    $winner->addTrophy($competition->getName(),1);
+                    $competition->setState(2);
+                }
+
+                else if($competition->getType()=="treeSimple"){
+                    $tree->game_valid_simple($em,$game);
+                }
+                else if($competition->getType()=="treeDouble"){
+                    $tree->game_valid_double($em,$game);
+                }
+            }
+            else if ($competitionType=="roundRobin"){
+                $roundRobin = $this->container->get('cp_competition.roundrobin');
+
+                $roundRobin->game_valid_simple($em,$game);
+
+            }
+            else if  ($competitionType=="league"){
+                $roundRobin = $this->container->get('cp_competition.roundrobin');
+
+                $roundRobin->game_valid_simple($em,$game);
+
+            }
+
+            */
             $em->flush();
 
             $session = $this->getRequest()->getSession();

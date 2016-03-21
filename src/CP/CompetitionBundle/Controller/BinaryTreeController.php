@@ -61,8 +61,6 @@ class BinaryTreeController extends Controller
 
         // On ajoute les champs de l'entité que l'on veut à notre formulaire
         $formBuilder
-            ->add('joueur1',      'text')
-            ->add('joueur2',     'text')
             ->add('score1',   'text')
             ->add('score2',    'text')
             ->add('save',      'submit')
@@ -95,7 +93,7 @@ class BinaryTreeController extends Controller
                     $winner = $game->getJoueur2();
                 }
 
-                $winner->addTrophy($competition,1);
+                $winner->addTrophy($competition->getName(),1);
                 $competition->setState(2);
             }
 
