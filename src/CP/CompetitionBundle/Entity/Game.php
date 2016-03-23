@@ -62,6 +62,28 @@ class Game
     private $Versuss;
 
     /**
+     * @ORM\ManyToOne(targetEntity="CP\CompetitionBundle\Entity\Competition")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $competition;
+
+    /**
+     * @return mixed
+     */
+    public function getCompetition()
+    {
+        return $this->competition;
+    }
+
+    /**
+     * @param mixed $competition
+     */
+    public function setCompetition($competition)
+    {
+        $this->competition = $competition;
+    }
+
+    /**
      * Get id
      *
      * @return integer 
@@ -188,10 +210,10 @@ class Game
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct($competition)
     {
         $this->Versuss = new \Doctrine\Common\Collections\ArrayCollection();
-
+        $this->competition=$competition;
     }
 
     /**

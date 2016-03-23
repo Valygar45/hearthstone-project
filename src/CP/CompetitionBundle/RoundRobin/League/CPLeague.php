@@ -42,7 +42,7 @@ class CPRoundRobin
                     $round = new Round();
                     $this->em->persist($round);
                     $round->setNumRound($day);
-                    $game = new Game();
+                    $game = new Game($competition);
                     $game->setTeam1($play["Home"]);
                     $game->setTeam2($play["Away"]);
                     $round->setGame($game);
@@ -90,7 +90,7 @@ class CPRoundRobin
         }
         return $round;
     }
-    public function game_valid_simple($emanage, $game){
+    public function game_valid_simple($competition,$emanage, $game){
 
 
         if($game->getScore1()>$game->getScore2()){

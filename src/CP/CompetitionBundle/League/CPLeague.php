@@ -51,7 +51,7 @@ class CPLeague
                     $round = new Round();
                     $this->em->persist($round);
                     $round->setNumRound($day);
-                    $game = new Game();
+                    $game = new Game($competition);
                     $game->setJoueur1($play["Home"]);
                     $game->setJoueur2($play["Away"]);
                     $game->setEtat(1);
@@ -100,7 +100,7 @@ class CPLeague
         }
         return $round;
     }
-    public function game_valid_simple($emanage, $game){
+    public function game_valid_simple($competition,$emanage, $game){
 
 
         if($game->getScore1()>$game->getScore2()){

@@ -98,10 +98,10 @@ class BinaryTreeController extends Controller
             }
 
             else if($competition->getType()=="treeSimple"){
-                $tree->game_valid_simple($emanage,$game);
+                $tree->game_valid_simple($competition,$emanage,$game);
             }
             else if($competition->getType()=="treeDouble"){
-                $tree->game_valid_double($emanage,$game);
+                $tree->game_valid_double($competition,$emanage,$game);
             }
 
 

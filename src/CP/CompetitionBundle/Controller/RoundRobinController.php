@@ -92,7 +92,7 @@ class RoundRobinController extends Controller
             $emanage = $this->getDoctrine()->getManager();
             $emanage->persist($game);
 
-                $roundRobin->game_valid_simple($emanage,$game);
+                $roundRobin->game_valid_simple($competition,$emanage,$game);
 
 
             return $this->redirect($this->generateUrl('cp_competition_roundrobinview',array("id"=>$competition->getId())));
@@ -137,7 +137,7 @@ class RoundRobinController extends Controller
 
         $competitionType = $competition->getType();
         if($competitionType=="roundRobinSimple"){
-            $fatherRound = $tree->simpleTreeGenerator(count($playersOrdered),$playersOrdered);
+            $fatherRound = $tree->simpleTreeGenerator($competition,count($playersOrdered),$playersOrdered);
         }
         else if ($competitionType=="roundRobinDouble"){
             $fatherRound = $tree->doubleTreeGenerator(count($playersOrdered),$playersOrdered);

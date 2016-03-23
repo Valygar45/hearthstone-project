@@ -39,7 +39,7 @@
 
         <p> Journée : {{ day+1 }} :</p>
         {% for round in rounds %}
-            <li><a href="{{ path('cp_competition_gameleague', { 'id': competition.id, 'game_id': round.game.id }) }}">{{ round.game.joueur1.username }} {{ round.game.score1 }} - {{ round.game.score2 }} {{ round.game.joueur2.username }}</a> </li>
+            <li><a href="{{ path('cp_competition_uploadScreenshots', {'game_id': round.game.id }) }}">{{ round.game.joueur1.username }} {{ round.game.score1 }} - {{ round.game.score2 }} {{ round.game.joueur2.username }}</a> </li>
 
         {% endfor %}
 

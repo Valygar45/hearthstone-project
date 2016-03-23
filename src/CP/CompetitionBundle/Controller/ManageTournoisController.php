@@ -45,17 +45,7 @@ class ManageTournoisController extends Controller
         //on récupère la game concernée
         $em = $this->getDoctrine()->getManager();
         $game = $em->getRepository('CPCompetitionBundle:Game')->find($id);
-        //on créé les versus dynamiquement pour en avoir autant qu'il y en a eu puis on les ajoute au form
-        for($nbVersusAdded=0; $nbVersusAdded<$nbVersus; $nbVersusAdded++)
-        {
-            //creation de l'objet versus
-            ${'versus'.$nbVersusAdded} = new Versus();
-            //ajout du numéro du versus
-            ${'versus'.$nbVersusAdded}->setNumber($nbVersusAdded+1);
-            ${'versus'.$nbVersusAdded}->setGame($game);
 
-            $game->addVersuss(${'versus'.$nbVersusAdded});
-        }
         $form = $this->get('form.factory')->create(new GameType(), $game);
         /*//Test avec un seul versus
         //creation d'un versus
@@ -82,9 +72,8 @@ class ManageTournoisController extends Controller
             $em->persist($game);
 
 
-/*
-            A Ajouter apres avoir recuperer l'entité competition
 
+            $competition = $game->getCompetition();
             $competitionType=$competition->getType();
 
             if($competitionType=="treeSimple" || $competitionType == "treeDouble"){
@@ -106,26 +95,26 @@ class ManageTournoisController extends Controller
                 }
 
                 else if($competition->getType()=="treeSimple"){
-                    $tree->game_valid_simple($em,$game);
+                    $tree->game_valid_simple($competition,$em,$game);
                 }
                 else if($competition->getType()=="treeDouble"){
-                    $tree->game_valid_double($em,$game);
+                    $tree->game_valid_double($competition,$em,$game);
                 }
             }
             else if ($competitionType=="roundRobin"){
                 $roundRobin = $this->container->get('cp_competition.roundrobin');
 
-                $roundRobin->game_valid_simple($em,$game);
+                $roundRobin->game_valid_simple($competition,$em,$game);
 
             }
             else if  ($competitionType=="league"){
                 $roundRobin = $this->container->get('cp_competition.roundrobin');
 
-                $roundRobin->game_valid_simple($em,$game);
+                $roundRobin->game_valid_simple($competition,$em,$game);
 
             }
 
-            */
+
             $em->flush();
 
             $session = $this->getRequest()->getSession();
@@ -217,7 +206,7 @@ class ManageTournoisController extends Controller
         $competition->setState(1);
 
         if( $competitionType=="treeSimple"){
-            $fatherRound = $tree->simpleTreeGenerator($competition->getNbPlayers(),$players);
+            $fatherRound = $tree->simpleTreeGenerator($competition,$competition->getNbPlayers(),$players);
             $em->persist($fatherRound);
             $competition->setFatherRound($fatherRound);
             $em->flush();

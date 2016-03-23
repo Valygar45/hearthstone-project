@@ -77,7 +77,7 @@ class LeagueController extends Controller
             $emanage = $this->getDoctrine()->getManager();
             $emanage->persist($game);
 
-                $roundRobin->game_valid_simple($emanage,$game);
+                $roundRobin->game_valid_simple($competition,$emanage,$game);
 
 
             return $this->redirect($this->generateUrl('cp_competition_leagueview',array("id"=>$competition->getId())));

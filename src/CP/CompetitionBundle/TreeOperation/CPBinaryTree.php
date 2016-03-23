@@ -20,6 +20,7 @@ class CPBinaryTree
     {
         $this->doctrine = $doctrine;
 
+
     }
 
     /**
@@ -29,7 +30,7 @@ class CPBinaryTree
      * @param $taille
      * @return Round
      */
-    public function simpleTreeGenerator($taille, $players)
+    public function simpleTreeGenerator($competition,$taille, $players)
 {
     if( ($taille & ($taille - 1)) != 0){
         throw new NotFoundHttpException('Le nombre de joueurs : "'.$taille.'" n \'est pas valable pour génerer un arbre binaire.');
@@ -37,7 +38,7 @@ class CPBinaryTree
     $this->em = $this->doctrine->getManager();
     $this->players = $players;
 
-    $fatherRound = $this->genererArbre(null, $taille);
+    $fatherRound = $this->genererArbre($competition,null, $taille);
     $this->em->flush();
 
     return $fatherRound;
@@ -51,7 +52,7 @@ class CPBinaryTree
      * @param $players
      * @return Round
      */
-public function doubleTreeGenerator($taille, $players)
+public function doubleTreeGenerator($competition,$taille, $players)
 {
     if( ($taille & ($taille - 1)) != 0){
         throw new NotFoundHttpException('Le nombre de joueurs : "'.$taille.'" n \'est pas valable pour génerer un arbre binaire.');
@@ -59,7 +60,7 @@ public function doubleTreeGenerator($taille, $players)
     $this->em = $this->doctrine->getManager();
     $this->players = $players;
 
-    $fatherWinRound = $this->simpleTreeGenerator($taille, $players);
+    $fatherWinRound = $this->simpleTreeGenerator($competition,$taille, $players);
     $fatherWinRounds=array();
     $fatherWinRounds=$this->parcourir_arbre_double($fatherWinRound,0,$fatherWinRounds);
     $firstLevel = count($fatherWinRounds);
@@ -264,7 +265,7 @@ $fatherRound = $competition->getFatherRound();
      * @return Round
      *
      */
-    public function genererArbre($round, $taille)
+    public function genererArbre($competition,$round, $taille)
     {
         $mainRound = new Round();
         $this->em->persist($mainRound);
@@ -272,7 +273,7 @@ $fatherRound = $competition->getFatherRound();
         $mainRound->setNumRound($taille / 2);
 
         if ($taille <= 2) {
-            $game = new Game();
+            $game = new Game($competition);
             $game->setJoueur1($this->players[0]);
             $game->setJoueur2($this->players[1]);
             $game->setScore1(null);
@@ -286,8 +287,8 @@ $fatherRound = $competition->getFatherRound();
 
         } else {
 
-            $mainRound->setRightRound($this->genererArbre($mainRound, $taille / 2, $this->em));
-            $mainRound->setLeftRound($this->genererArbre($mainRound, $taille / 2, $this->em));
+            $mainRound->setRightRound($this->genererArbre($competition,$mainRound, $taille / 2, $this->em));
+            $mainRound->setLeftRound($this->genererArbre($competition,$mainRound, $taille / 2, $this->em));
 
 
         }
@@ -464,7 +465,7 @@ $fatherRound = $competition->getFatherRound();
      * @param $game
      */
 
-    public function game_valid_simple($emanage, $game){
+    public function game_valid_simple($competition,$emanage, $game){
 
 
         if($game->getScore1()>$game->getScore2()){
@@ -489,7 +490,7 @@ $fatherRound = $competition->getFatherRound();
                 $emanage->persist($nextRound);
                 $nextGame = $nextRound->getGame();
                 if ($nextGame == null) {
-                    $nextGame = new Game();
+                    $nextGame = new Game($competition);
                     $game->setEtat(1);
                 }
 
@@ -512,7 +513,7 @@ $fatherRound = $competition->getFatherRound();
      * @param $emanage
      * @param $game
      */
-    public function game_valid_double($emanage, $game){
+    public function game_valid_double($competition,$emanage, $game){
 
 
         if($game->getScore1()>$game->getScore2()){
@@ -539,7 +540,7 @@ $fatherRound = $competition->getFatherRound();
                 $emanage->persist($nextRound);
                 $nextGame = $nextRound->getGame();
                 if ($nextGame == null) {
-                    $nextGame = new Game();
+                    $nextGame = new Game($competition);
                     $game->setEtat(1);
                 }
 
@@ -559,7 +560,7 @@ $fatherRound = $competition->getFatherRound();
                 $emanage->persist($loserRound);
                 $loserGame = $loserRound->getGame();
                 if ($loserGame == null) {
-                    $loserGame = new Game();
+                    $loserGame = new Game($competition);
                     $game->setEtat(1);
                 }
 
